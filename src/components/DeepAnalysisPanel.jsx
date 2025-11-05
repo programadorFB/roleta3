@@ -129,11 +129,17 @@ const DeepAnalysisPanel = ({ spinHistory }) => {
             return acc;
         }, {});
 
-        const sleepers = Object.entries(lastSeenIndex)
-            .sort(([,a], [,b]) => (a === -1 ? -Infinity : a) - (b === -1 ? -Infinity : b))
+const sleepers = Object.entries(lastSeenIndex)
+            .sort(([,a], [,b]) => {
+                // Trata -1 (nunca saiu) como o valor mais "antigo" (totalSpins)
+                const aValue = (a === -1) ? totalSpins : a;
+                const bValue = (b === -1) ? totalSpins : b;
+                
+                // Ordena de forma descendente (maior "ago" primeiro)
+                return bValue - aValue;
+            })
             .map(([num, index]) => ({ num, ago: index === -1 ? totalSpins : index }))
             .slice(0, 5);
-
         return {
             hotNumbers, 
             sleepers, 
