@@ -327,7 +327,7 @@ const SectorsAnalysis = ({ spinHistory }) => {
           <div>• <span style={{ color: '#10b981' }}>Ativo</span>: -10 rodadas</div>
         </div>
         <div style={{ marginTop: '0.5rem', fontSize: '0.8rem', fontStyle: 'italic' }}>
-          * Temperatura: % de acertos nas últimas 50 rodadas
+          * Temperatura: % de repetições nas últimas 50 rodadas
         </div>
       </div>
     </>

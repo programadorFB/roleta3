@@ -1,11 +1,12 @@
 // components/MasterDashboard.jsx
-import React, { useMemo, useState, useEffect } from 'react'; // <-- 1. IMPORTADO O useEffect
-import { Target, PieChart, Layers, AlertOctagon, Zap, CheckCircle, X } from 'lucide-react';
+import React, { useMemo, useState, useEffect } from 'react';
+// import { Target, PieChart, Layers, AlertOctagon, Zap, CheckCircle, X } from 'lucide-react'; // <-- REMOVIDO
 
 import { calculateMasterScore } from '../services/masterScoring.jsx';
 import styles from './MasterDashboard.module.css';
 
 // Mapeia o nome da estratégia para um ícone (FiboNasa Removido)
+/* <-- Bloco ICONS removido 
 const ICONS = {
   'Terminais': <PieChart size={10} />,
   'Setores': <Target size={10} />,
@@ -13,6 +14,7 @@ const ICONS = {
   'Ocultos': <AlertOctagon size={10} />,
   'Croupier': <Zap size={10} />,
 };
+*/
 
 // Pega a cor de um número
 const getNumberColor = (num) => {
@@ -42,7 +44,7 @@ const StrategyMiniCard = ({ name, score, status }) => {
     <div className={styles.strategyMiniCard} style={{ borderBottomColor: statusColor }}>
       <div className={styles.miniCardHeader}>
       <br/>
-        {ICONS[name] || <Target size={15} />}
+        {/* {ICONS[name] || <Target size={15} />} <-- Ícone removido */}
         <span>{name}</span>
       </div>
       <div className={styles.miniCardScore} style={{ color: statusColor }}>
@@ -56,14 +58,13 @@ const StrategyMiniCard = ({ name, score, status }) => {
 };
 
 // Componente Principal
-const MasterDashboard = ({ spinHistory, onSignalUpdate }) => { // <-- Recebe onSignalUpdate
+const MasterDashboard = ({ spinHistory, onSignalUpdate }) => { 
   const [isSignalAccepted, setIsSignalAccepted] = useState(false);
 
   const analysis = useMemo(() => {
     return calculateMasterScore(spinHistory);
   }, [spinHistory]);
 
-  // --- 2. ADIÇÃO DO useEffect ---
   // Este efeito envia os números do sinal de entrada para o App.jsx (componente pai)
   useEffect(() => {
     if (analysis && analysis.entrySignal && analysis.entrySignal.suggestedNumbers) {
@@ -80,8 +81,7 @@ const MasterDashboard = ({ spinHistory, onSignalUpdate }) => { // <-- Recebe onS
     }
 
   }, [analysis, onSignalUpdate]); // Dispara sempre que a análise mudar
-  // -----------------------------
-
+  
   // Mostrar mensagem de espera se não houver dados suficientes
   if (!analysis || analysis.strategyScores.length === 0) {
     // Limpa os sinais se estiver em modo de espera
@@ -119,11 +119,12 @@ const MasterDashboard = ({ spinHistory, onSignalUpdate }) => { // <-- Recebe onS
         <div className={styles['strategy-header']} style={{ marginBottom: '0.5rem' }}>
           <h4 className={styles['card-title']}>Indicações</h4>
         </div>
+
         {/* 3. SINAL DE ENTRADA (Se existir) */}
         {entrySignal && !isSignalAccepted && (
           <div className={styles.entrySignalCard}>
             <div className={styles['strategy-header']} style={{ marginBottom: '1rem', borderBottomColor: '#10b981' }}>
-              <CheckCircle size={15} style={{ color: '#10b981', marginLeft:"10px", marginTop:'15px' }} />
+              {/* <CheckCircle size={15} style={{ color: '#10b981', marginLeft:"10px", marginTop:'15px' }} /> <-- Ícone removido */}
               <h4 className={styles['card-title2']} style={{ color: '#10b981' }}>SINAL DE ENTRADA CONFIRMADO!</h4>
             </div>
   
@@ -138,24 +139,26 @@ const MasterDashboard = ({ spinHistory, onSignalUpdate }) => { // <-- Recebe onS
               </div>
             </div>
   
-            <div className={styles['stats-grid']} style={{ gridTemplateColumns: 'repeat(3, 1fr)', marginBottom: '1.5rem' }}>
-              <div style={{ textAlign: 'center' }}>
-                <div className={styles['stat-label']} style={{ justifyContent: 'center' }}>💰 Sugestão</div>
-                <div className={styles['stat-value']} style={{ justifyContent: 'center' }}>5 unids</div> {/* Valor fixo por enquanto */}
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                <div className={styles['stat-label']} style={{ justifyContent: 'center' }}>🎯 Confiança</div>
-                <div className={styles['stat-value']} style={{ justifyContent: 'center' }}>{entrySignal.confidence.toFixed(0)}%</div>
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                <div className={styles['stat-label']} style={{ justifyContent: 'center' }}>⏱️ Válido por</div>
-                <div className={styles['stat-value']} style={{ justifyContent: 'center' }}>{entrySignal.validFor} giros</div>
-              </div>
-            </div>
-  
           </div>
         )}
 
+        {/* 'stats-grid' REALOCADO AQUI. */}
+        {entrySignal && (
+            <div className={styles['stats-grid']} style={{ gridTemplateColumns: 'repeat(3, 1fr)', marginTop: '1.5rem' }}>
+              <div style={{ textAlign: 'center' }}>
+                <div className={styles['stat-label']} style={{ justifyContent: 'center', fontSize:'15px' }}>💰 Sugestão</div>
+                <div className={styles['stat-value']} style={{ justifyContent: 'center',fontSize:'15px' }}>5 unids</div> {/* Valor fixo por enquanto */}
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <div className={styles['stat-label']} style={{ justifyContent: 'center', fontSize:'15px'}}>🎯 Confiança</div>
+                <div className={styles['stat-value']} style={{ justifyContent: 'center', fontSize:'15px' }}>{entrySignal.confidence.toFixed(0)}%</div>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <div className={styles['stat-label']} style={{ justifyContent: 'center', fontSize:'15px' }}>⏱️ Válido por</div>
+                <div className={styles['stat-value']} style={{ justifyContent: 'center',fontSize:'15px' }}>{entrySignal.validFor} giros</div>
+              </div>
+            </div>
+        )}
 
       </div>
 

@@ -370,7 +370,7 @@ const GlobalStyles = () => (
 
     @media (max-width: 1400px) {
       .container { grid-template-columns: 1fr; padding: 1.5rem; }
-      .stats-dashboard { position: static; max-height: none; grid-column: auto; }
+
       .roulette-wrapper { grid-column: auto; flex-direction: column; align-items: center; }
       .analysis-panel {
         position: static;
@@ -644,28 +644,39 @@ const filterOptions = [
 
 // <-- 1. FUNÇÃO HELPER PARA O TOOLTIP (FORMATO CORRIGIDO) -->
 /**
- * Formata o tooltip de "puxadas" para um número, mostrando a lista de números únicos.
+* Formata o tooltip de "puxadas" e "anteriores" para um número, limitando a 5.
  * @param {number} number - O número que estamos analisando.
- * @param {Map<number, Map<number, number>>} pullStats - O mapa pré-calculado.
+ * @param {Map<number, Map<number, number>>} pullStats - O mapa de números que vieram DEPOIS.
+ * @param {Map<number, Map<number, number>>} previousStats - O mapa de números que vieram ANTES.
  * @returns {string} - A string formatada para o tooltip.
  */
-const formatPullTooltip = (number, pullStats) => {
-  const statsMap = pullStats.get(number); // Isso é um Map<pulledNumber, count>
-  if (!statsMap || statsMap.size === 0) {
-    return `Número: ${number}\n(Sem histórico de 'puxadas' no dataset)`;
+const formatPullTooltip = (number, pullStats, previousStats) => {
+  const pullStatsMap = pullStats.get(number);
+  const prevStatsMap = previousStats.get(number);
+
+  let pullString = "(Nenhum)";
+  if (pullStatsMap && pullStatsMap.size > 0) {
+    const pulledNumbers = [...pullStatsMap.keys()];
+    const displayPull = pulledNumbers.slice(0, 5); // Pega os primeiros 5
+    pullString = displayPull.join(', ');
+    if (pulledNumbers.length > 5) {
+      pullString += ', ...'; // Adiciona "..." se houver mais de 5
+    }
   }
 
-  // Pega todos os números únicos que já foram puxados (as chaves do mapa interno)
-  const pulledNumbers = [...statsMap.keys()];
+  let prevString = "(Nenhum)";
+  if (prevStatsMap && prevStatsMap.size > 0) {
+    const prevNumbers = [...prevStatsMap.keys()];
+    const displayPrev = prevNumbers.slice(0, 5); // Pega os primeiros 5
+    prevString = displayPrev.join(', ');
+    if (prevNumbers.length > 5) {
+      prevString += ', ...'; // Adiciona "..." se houver mais de 5
+    }
+  }
 
-  // Formata como: "1, 5, 12"
-  const pullString = pulledNumbers.join(', '); 
-
-  return `Número: ${number}\nPuxou: ${pullString}`;
+  // \n é a quebra de linha no tooltip do title
+  return `Número: ${number}\nPuxou: ${pullString}\nVeio Antes: ${prevString}`;
 };
-// <-- FIM DA MUDANÇA -->
-
-
 // Main App
 const App = () => {
   // Auth States
@@ -953,7 +964,29 @@ for (let i = 1; i < spinHistory.length; i++) {
     return pullMap;
   }, [spinHistory]); // Depende apenas do histórico completo
   // <-- FIM DA MUDANÇA -->
-  
+  const numberPreviousStats = useMemo(() => {
+    // Map<number, Map<previousNumber, count>>
+    const prevMap = new Map();
+
+    // Inicializa o mapa para todos os 37 números
+    for (let i = 0; i <= 36; i++) {
+      prevMap.set(i, new Map());
+    }
+
+    // Itera sobre o histórico COMPLETO (spinHistory)
+    // spinHistory[i] é o número ATUAL
+    // spinHistory[i+1] é o número que veio IMEDIATAMENTE ANTES
+    for (let i = 0; i < spinHistory.length - 1; i++) {
+      const currentNumber = spinHistory[i].number;     // Número analisado (o mais recente)
+      const previousNumber = spinHistory[i + 1].number; // Número ANTERIOR (o mais antigo)
+      
+      const numberStats = prevMap.get(currentNumber);
+      const currentPrevCount = numberStats.get(previousNumber) || 0;
+      numberStats.set(previousNumber, currentPrevCount + 1);
+    }
+        
+    return prevMap;
+  }, [spinHistory])
   const getNumberPosition = useCallback((number, radius) => {
     const index = rouletteNumbers.indexOf(number);
     if (index === -1) return { x: 0, y: 0, angle: 0 };
@@ -1174,8 +1207,12 @@ for (let i = 1; i < spinHistory.length; i++) {
                     
                     const isHighlighted = hoveredNumber !== null && result.number === hoveredNumber;
                     
-                    // Usa a nova função para gerar o tooltip com o histórico de puxadas
-                    const tooltipTitle = formatPullTooltip(result.number, numberPullStats); 
+                    // Usa a nova função para gerar o tooltip com AMBOS os históricos
+                    const tooltipTitle = formatPullTooltip(
+                      result.number, 
+                      numberPullStats,      // O que veio DEPOIS
+                      numberPreviousStats   // O que veio ANTES
+                    ); 
 
                     return (
                       <div 

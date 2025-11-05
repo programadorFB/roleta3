@@ -141,7 +141,7 @@ body {
   position: sticky;
   top: 1.5rem;
   max-height: calc(100vh - 3rem - 65px);
-  overflow-y: hidden;
+  overflow-y: auto;
   color: white;
 }
 
