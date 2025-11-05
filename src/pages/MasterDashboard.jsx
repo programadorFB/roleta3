@@ -146,7 +146,7 @@ const MasterDashboard = ({ spinHistory, onSignalUpdate }) => {
         {entrySignal && (
             <div className={styles['stats-grid']} style={{ gridTemplateColumns: 'repeat(3, 1fr)', marginTop: '1.5rem' }}>
               <div style={{ textAlign: 'center' }}>
-                <div className={styles['stat-label']} style={{ justifyContent: 'center', fontSize:'15px' }}>💰 Sugestão</div>
+                <div className={styles['stat-label']} style={{ justifyContent: 'center', fontSize:'15px' }}>💰<br/> Sugestão</div>
                 <div className={styles['stat-value']} style={{ justifyContent: 'center',fontSize:'15px' }}>5 unids</div> {/* Valor fixo por enquanto */}
               </div>
               <div style={{ textAlign: 'center' }}>
@@ -154,7 +154,7 @@ const MasterDashboard = ({ spinHistory, onSignalUpdate }) => {
                 <div className={styles['stat-value']} style={{ justifyContent: 'center', fontSize:'15px' }}>{entrySignal.confidence.toFixed(0)}%</div>
               </div>
               <div style={{ textAlign: 'center' }}>
-                <div className={styles['stat-label']} style={{ justifyContent: 'center', fontSize:'15px' }}>⏱️ Válido por</div>
+                <div className={styles['stat-label']} style={{ justifyContent: 'center', fontSize:'15px' }}>⏱️<br/> Válido </div>
                 <div className={styles['stat-value']} style={{ justifyContent: 'center',fontSize:'15px' }}>{entrySignal.validFor} giros</div>
               </div>
             </div>
