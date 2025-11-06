@@ -54,7 +54,7 @@ body {
    HEADER DE NAVEGAÇÃO
    ======================================== */
 .navbar {
-  background: #111827;
+  background: #1a1a1a;
   padding: 0.75rem 2rem;
   display: flex;
   justify-content: space-between;
@@ -62,6 +62,7 @@ body {
   gap: 1rem;
   border-bottom: 3px solid #a16207;
   position: sticky;
+  width: 100%;
   top: 0;
   z-index: 100;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
@@ -150,7 +151,7 @@ body {
 .container {
   min-height: 100vh ;
   min-width:100vw ;
-  background: #4d4d4d;
+  background: #20311f;
   display: grid;
   grid-template-columns: 320px 1fr 420px;
   gap: 1.5rem;
@@ -197,6 +198,7 @@ body {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 0.75rem;
   padding: 1rem;
+  height: fit-content;
   margin-top:-10px ;
   border: 1px solid #374151;
   margin-bottom: 1.5rem;
@@ -1127,7 +1129,9 @@ body {
     font-size: 1.5rem;
   }
   .stats-dashboard{
-    height: 760px;
+    height: fit-content;
+    padding-bottom: 0px;
+    
   }
   .latest-results-compact{
     height: 522px;
@@ -1236,11 +1240,157 @@ body {
     width: 100%;
     max-width: 430px;
   }
-
+  .navbar{
+    width: 100%;
+  }
+  .analysis-panel{
+    margin-top: -80px;
+  }
   .game-iframe-wrapper {
     width: 108%;
     height: auto;
     margin-top: -55px;
+    margin-bottom: 55px;
+    padding-bottom: 150%;
+    pointer-events:visiblePainted;
+  }
+
+  
+}
+@media (max-width: 415px) {
+  .main-title {
+    font-size: 1.5rem;
+  }
+  .container{
+    margin-left: -15px;
+    overflow-x:unset;
+  }
+  .stats-dashboard{
+    height: fit-content;
+    
+  }
+  .latest-results-compact{
+    height: 522px;
+  }
+  .subtitle {
+    font-size: 0.9rem;
+  }
+
+  .green-base {
+    width: 280px;
+    height: 280px;
+  }
+
+  .number-slot {
+    width: 30px;
+    height: 30px;
+    font-size: 0.75rem;
+  }
+
+  .ball {
+    width: 18px;
+    height: 18px;
+  }
+
+  .results-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .popup-content {
+    padding: 1.25rem;
+  }
+
+  .popup-number-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 1.75rem;
+  }
+
+  .popup-header {
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .popup-title {
+    font-size: 1.25rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 0.75rem;
+  }
+  .stat-card{
+    height: fit-content;
+    margin-top: 15px;
+    margin-bottom: -5px;
+  }
+  .info-card {
+    padding: 0.875rem;
+  }
+
+  .info-label {
+    font-size: 0.85rem;
+  }
+
+  .info-value {
+    font-size: 1.2rem;
+  }
+
+  .next-spins-title {
+    font-size: 1.1rem;
+  }
+  .racetrack-mobile-only{
+    margin-top: -30px;
+    margin-bottom: -30px;
+    margin-left: 0px;
+  }
+  .next-spins-container {
+    gap: 1rem;
+  }
+
+  .next-spins-card {
+    padding: 0.875rem;
+  }
+
+  .next-spins-label {
+    font-size: 0.9rem;
+  }
+
+  .next-number {
+    width: 28px;
+    height: 28px;
+    font-size: 0.85rem;
+  }
+
+  .popup-footer-btn {
+    font-size: 1rem;
+    padding: 0.875rem 1.25rem;
+  }
+
+  .game-title {
+    font-size: 1.1rem;
+  }
+
+  .game-close-btn {
+    padding: 0.65rem 1.25rem;
+    font-size: 0.9rem;
+  }
+
+  .game-container {
+    margin-top: 0;
+    margin-left: -150px;
+    width: 100%;
+    max-width: 430px;
+  }
+  .analysis-panel{
+    margin-top: -75px;
+    margin-left: 0px;
+  }
+  .game-iframe-wrapper {
+    width: 108%;
+    height: auto;
+    margin-top: -5px;
+    margin-left: 0px;
     padding-bottom: 150%;
   }
 }
