@@ -278,7 +278,7 @@ const sleepers = Object.entries(lastSeenIndex)
                     }}
                 >
                     {/* 2. ÍCONE DE ESTATÍSTICAS MUDADO */}
-                    <TrendingUp size={18} />
+                    
                     Geral
                 </button>
                 
@@ -304,7 +304,6 @@ const sleepers = Object.entries(lastSeenIndex)
                         boxShadow: activeTab === 'frequency' ? '0 2px 8px rgba(202, 138, 4, 0.4)' : 'none'
                     }}
                 >
-                    <BarChart3 size={18} />
                     Frequência
                 </button>
 
@@ -329,7 +328,6 @@ const sleepers = Object.entries(lastSeenIndex)
                         boxShadow: activeTab === 'neighbors' ? '0 2px 8px rgba(202, 138, 4, 0.4)' : 'none'
                     }}
                 >
-                    <Layers size={18} />
                     Vizinhança
                 </button>
                 <button
@@ -353,7 +351,6 @@ const sleepers = Object.entries(lastSeenIndex)
                         boxShadow: activeTab === 'terminals' ? '0 2px 8px rgba(202, 138, 4, 0.4)' : 'none'
                     }}
                 >
-                    <PieChart size={18} />
                     Cavalos
                 </button>
        
@@ -378,7 +375,6 @@ const sleepers = Object.entries(lastSeenIndex)
                         boxShadow: activeTab === 'advanced' ? '0 2px 8px rgba(202, 138, 4, 0.4)' : 'none'
                     }}
                 >
-                    <Cpu size={18} />
                     Avançado
                 </button>
                 <button
@@ -402,7 +398,6 @@ const sleepers = Object.entries(lastSeenIndex)
                         boxShadow: activeTab === 'sectors' ? '0 2px 8px rgba(202, 138, 4, 0.4)' : 'none'
                     }}
                 >
-                    <Target size={18} />
                     Setores Secos
                 </button>
                 
