@@ -191,7 +191,7 @@ const AdvancedPatternsAnalysis = ({ spinHistory }) => {
       </h3>
 
       {/* --- Card 1: Ocultos (REQ 1 & 3) --- */}
-      <StatCard title="Números Ocultos (Top 10)" icon={<AlertOctagon size={24} className={styles.dangerIcon} />}>
+      <StatCard title="Números Ausentes (Top 10)" icon={<AlertOctagon size={24} className={styles.dangerIcon} />}>
         <table className={styles.analysisTable}>
           <thead>
             <tr>
@@ -202,9 +202,6 @@ const AdvancedPatternsAnalysis = ({ spinHistory }) => {
             </tr>
           </thead>
           <tbody>
-            {/* ================================================================== */}
-            {/* [MODIFICADO] Destaque do número 25 foi removido daqui */}
-            {/* ================================================================== */}
             {analysis.top10Ocultos.map(item => (
               <tr key={item.number}>
                 <td><NumberChip number={item.number} /></td>
@@ -215,15 +212,12 @@ const AdvancedPatternsAnalysis = ({ spinHistory }) => {
                 <td>{item.score.toFixed(0)}</td>
               </tr>
             ))}
-            {/* ================================================================== */}
-            {/* Fim da Modificação */}
-            {/* ================================================================== */}
           </tbody>
         </table>
       </StatCard>
 
       {/* --- Card 3: Sequências (REQ 3) --- */}
-      <StatCard title="Sequência de Dúzias (Padrão de 3)" icon={<Repeat size={24} className={styles.warningIcon} />}>
+      {/* <StatCard title="Sequência de Dúzias (Padrão de 3)" icon={<Repeat size={24} className={styles.warningIcon} />}>
         {analysis.mostFrequentSequence ? (
           <>
             <div className={styles['stat-row']}>
@@ -250,7 +244,7 @@ const AdvancedPatternsAnalysis = ({ spinHistory }) => {
             Nenhuma sequência de 3 dúzias se repetiu ainda.
           </p>
         )}
-      </StatCard>
+      </StatCard> */}
     </>
   );
 };

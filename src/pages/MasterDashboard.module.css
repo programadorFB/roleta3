@@ -36,14 +36,14 @@
   color: #fde047;
   text-transform: uppercase;
   letter-spacing: 1px;
-  margin-left: 92px;
+  margin-bottom: 16px;
   margin-top: 16px;
   text-shadow: 0 2px 8px rgba(253, 224, 71, 0.3);
 }
 .card-title2{
   margin-top: 15px;
   font-size: small;
-  margin-left: 5px;
+  margin-left: 40px;
 }
 .infoIcon {
   color: #fde047;

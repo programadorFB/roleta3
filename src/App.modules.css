@@ -134,8 +134,9 @@ body {
 .stats-dashboard {
   grid-column: 1 / 2;
   background: #1a1a1a;
+  height: 800px;
   border-radius: 1rem;
-  padding: 1.25rem;
+  padding: 1rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   
   position: sticky;

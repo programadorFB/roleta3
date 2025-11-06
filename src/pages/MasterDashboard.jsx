@@ -116,10 +116,9 @@ const MasterDashboard = ({ spinHistory, onSignalUpdate }) => {
 
       {/* 1. PAINEL MASTER - STATUS GERAL */}
       <div className={styles.strategyCard} >
-        <div className={styles['strategy-header']} style={{ marginBottom: '0.5rem' }}>
+        
           <h4 className={styles['card-title']}>Indicações</h4>
-        </div>
-
+        
         {/* 3. SINAL DE ENTRADA (Se existir) */}
         {entrySignal && !isSignalAccepted && (
           <div className={styles.entrySignalCard}>
@@ -133,7 +132,6 @@ const MasterDashboard = ({ spinHistory, onSignalUpdate }) => {
             </p>
   
             <div style={{ marginBottom: '1rem' }}>
-              <span className={styles['stat-label']} style={{ justifyContent: 'center', marginBottom: '0.5rem' }}>📊 Aposte em:</span>
               <div style={{ textAlign: 'center' }}>
                 {entrySignal.suggestedNumbers.map(num => <NumberChip key={num} number={num} />)}
               </div>
@@ -150,7 +148,7 @@ const MasterDashboard = ({ spinHistory, onSignalUpdate }) => {
                 <div className={styles['stat-value']} style={{ justifyContent: 'center',fontSize:'15px' }}>5 unids</div> {/* Valor fixo por enquanto */}
               </div>
               <div style={{ textAlign: 'center' }}>
-                <div className={styles['stat-label']} style={{ justifyContent: 'center', fontSize:'15px'}}>🎯 Confiança</div>
+                <div className={styles['stat-label']} style={{ justifyContent: 'center', fontSize:'15px'}}>🎯<br/> Confiança</div>
                 <div className={styles['stat-value']} style={{ justifyContent: 'center', fontSize:'15px' }}>{entrySignal.confidence.toFixed(0)}%</div>
               </div>
               <div style={{ textAlign: 'center' }}>

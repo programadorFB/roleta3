@@ -58,7 +58,7 @@ const GlobalStyles = () => (
     }
 
     .stat-title {
-        font-size: 1.1rem;
+        font-size: 0.8rem;
         font-weight: 600;
         color: #fbbf24;
         margin-bottom: 0.5rem;
@@ -69,7 +69,7 @@ const GlobalStyles = () => (
     }
 
     .stat-value-lg {
-        font-size: 2rem;
+        font-size: 2.1rem;
         font-weight: bold;
         margin-bottom: 0.5rem;
         color: #fde047;
@@ -1138,10 +1138,9 @@ for (let i = 1; i < spinHistory.length; i++) {
               )}
             </div>
             
-            <hr className="divider" />
             <div className="stat-card">
                   <div className="stat-card">
-              <h4 className="stat-title"><BarChart3 size={20} /> Total de Sinais</h4>
+              <h4 className="stat-title"><BarChart3 size={10} /> Total de Sinais</h4>
              <p className="stat-value-lg">{filteredSpinHistory.length}</p>
             </div>
                   <div style={{marginTop: '2rem', width: '100%', maxWidth: '800px'}}>

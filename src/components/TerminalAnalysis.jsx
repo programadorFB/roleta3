@@ -266,7 +266,7 @@ const TerminalAnalysis = ({ spinHistory }) => {
             </div>
 
             {/* --- Status dos Terminais (com Barras) --- */}
-            <StatCard title="Status dos Terminais" icon={<Target size={24} className={styles.infoIcon} />}>
+            <StatCard title="Status dos Cavalos" icon={<Target size={24} className={styles.infoIcon} />}>
 
                 
                 {/* --- Lista de Barras --- */}
