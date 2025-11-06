@@ -418,7 +418,7 @@ const Login = ({ onLoginSuccess }) => {
   const brands = [
     { value: 'betou', label: 'Betou' },
     // { value: 'betfusion', label: 'BetFusion' },
-    // { value: 'sortenabet', label: 'Sortena Bet' }
+    { value: 'sortenabet', label: 'Sorte na Bet' }
   ];
   const handleChange = (e) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -521,11 +521,11 @@ const Login = ({ onLoginSuccess }) => {
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             <div>
 
-              {/* <select name="brand" value={formData.brand} onChange={handleChange} required
+              <select name="brand" value={formData.brand} onChange={handleChange} required
                 style={{ width: '100%', padding: '0.75rem 1rem', background: '#374151', border: '1px solid #4b5563',
                   borderRadius: '0.5rem', color: 'white', fontSize: '1rem', cursor: 'pointer' }}>
                 {brands.map(b => <option key={b.value} value={b.value}>{b.label}</option>)}
-              </select> */}
+              </select>
             </div>
             <div>
 
