@@ -12,6 +12,8 @@ import RacingTrack from './components/RacingTrack.jsx';
 import DeepAnalysisPanel from './components/DeepAnalysisPanel.jsx';
 import './components/NotificationsCenter.css';
 import  './App.modules.css';
+// Define a URL base da API
+const API_URL = import.meta.env.VITE_API_URL || ''; // <-- ISSO ESTÁ CORRETO
 
 const GlobalStyles = () => (
   <style>{`
@@ -412,7 +414,7 @@ const GlobalStyles = () => (
   `}</style>
 );
 
-const Login = ({ onLoginSuccess }) => {
+const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => { // <-- Adicionado setIsPaywallOpen e setCheckoutUrl
   const [formData, setFormData] = useState({ email: '', password: '', brand: 'betou' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -447,7 +449,9 @@ const Login = ({ onLoginSuccess }) => {
       return;
     }
     try {
-      const response = await fetch('/login', {
+      // --- CORREÇÃO 1 DE 3 ---
+      // Adicionado o prefixo ${API_URL}
+      const response = await fetch(`${API_URL}/login`, { //
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify(formData)
@@ -469,8 +473,7 @@ const Login = ({ onLoginSuccess }) => {
           const errorJson = JSON.parse(errorText);
           errorMessage = errorJson.message || `Erro ${response.status}: Resposta JSON inválida.`;
 
-          // --- CORREÇÃO AQUI ---
-          // O bloco foi movido para DENTRO do 'try'
+          // --- CORREÇÃO AQUI (Sua correção anterior estava correta) ---
           if (errorJson.code === 'FORBIDDEN_SUBSCRIPTION') {
             setCheckoutUrl(errorJson.checkoutUrl || ''); 
             setIsPaywallOpen(true); 
@@ -480,8 +483,6 @@ const Login = ({ onLoginSuccess }) => {
         } catch (e) {
           console.error("Erro não-JSON recebido do backend:", errorText);
           errorMessage = `Erro ${response.status}. O servidor retornou uma resposta inesperada.`;
-          
-          // O bloco IF foi REMOVIDO daqui
         }
         setError(errorMessage);
       }
@@ -784,7 +785,9 @@ const App = () => {
     }
   
     try {
-      const response = await fetch(`/start-game/${gameId}`, {
+      // --- CORREÇÃO 2 DE 3 ---
+      // Adicionado o prefixo ${API_URL}
+      const response = await fetch(`${API_URL}/start-game/${gameId}`, { //
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${jwtToken}`
@@ -866,7 +869,9 @@ const App = () => {
       return; // Não fazer a chamada se não tivermos o email
     }
     try {
-      const response = await fetch(`/api/full-history?source=${selectedRoulette}&userEmail=${encodeURIComponent(userInfo.email)}`);
+      // --- CORREÇÃO 3 DE 3 ---
+      // Adicionado o prefixo ${API_URL}
+      const response = await fetch(`${API_URL}/api/full-history?source=${selectedRoulette}&userEmail=${encodeURIComponent(userInfo.email)}`); //
       if (!response.ok) {
         const errData = await response.json(); // Pega o JSON do erro
         
@@ -1099,7 +1104,12 @@ const App = () => {
   }
 
   if (!isAuthenticated) {
-    return <Login onLoginSuccess={handleLoginSuccess} />;
+    // Corrigido: Passando os setters para o componente Login
+    return <Login 
+              onLoginSuccess={handleLoginSuccess} 
+              setIsPaywallOpen={setIsPaywallOpen}
+              setCheckoutUrl={setCheckoutUrl}
+           />;
   }
 
   return (
