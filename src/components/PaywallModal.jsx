@@ -56,6 +56,11 @@ const plans = {
     window.open(plans[selectedPlan].checkoutUrl);
   };
 
+  const handleFreeRedirect = () => {
+    // Redireciona para a versão free
+    window.location.href = 'https://fuza.onrender.com';
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -211,6 +216,14 @@ const plans = {
               >
                 <CreditCard size={20} />
                 <span>Assinar Agora</span>
+              </button>
+
+              {/* Free Mode Button */}
+              <button 
+                className="paywall-cta-free"
+                onClick={handleFreeRedirect}
+              >
+                <span>Continuar no Modo Free</span>
               </button>
 
               {/* Trust badges */}
