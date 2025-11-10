@@ -4,6 +4,8 @@ import {
     X, BarChart3, Clock, Hash, Percent, Layers, CheckSquare, Settings, 
     LogOut, Lock, Mail, AlertCircle, PlayCircle, Filter 
 } from 'lucide-react';
+import PaywallModal from './components/PaywallModal.jsx'; //
+import './components/PaywallModal.css';
 import NotificationCenter from './components/NotificationCenter.jsx';
 import MasterDashboard from './pages/MasterDashboard.jsx';
 import RacingTrack from './components/RacingTrack.jsx';
@@ -431,6 +433,8 @@ const Login = ({ onLoginSuccess }) => {
     localStorage.setItem('userBrand', formData.brand);
     onLoginSuccess({ jwt: devJwt, email: formData.email });
   };
+// App.jsx (substitua toda a função handleSubmit)
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -464,9 +468,20 @@ const Login = ({ onLoginSuccess }) => {
         try {
           const errorJson = JSON.parse(errorText);
           errorMessage = errorJson.message || `Erro ${response.status}: Resposta JSON inválida.`;
+
+          // --- CORREÇÃO AQUI ---
+          // O bloco foi movido para DENTRO do 'try'
+          if (errorJson.code === 'FORBIDDEN_SUBSCRIPTION') {
+            setCheckoutUrl(errorJson.checkoutUrl || ''); 
+            setIsPaywallOpen(true); 
+          }
+          // --- FIM DA CORREÇÃO ---
+
         } catch (e) {
           console.error("Erro não-JSON recebido do backend:", errorText);
           errorMessage = `Erro ${response.status}. O servidor retornou uma resposta inesperada.`;
+          
+          // O bloco IF foi REMOVIDO daqui
         }
         setError(errorMessage);
       }
@@ -681,7 +696,8 @@ const App = () => {
   const [userInfo, setUserInfo] = useState(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [jwtToken, setJwtToken] = useState(null);
-
+  const [isPaywallOpen, setIsPaywallOpen] = useState(false);
+  const [checkoutUrl, setCheckoutUrl] = useState('');
   // App States
   const [selectedRoulette, setSelectedRoulette] = useState(Object.keys(ROULETTE_SOURCES)[0]);
   const [spinHistory, setSpinHistory] = useState([]);
@@ -845,9 +861,25 @@ const App = () => {
 
   // Fetch History
   const fetchHistory = useCallback(async () => {
+    if (!userInfo || !userInfo.email) {
+      console.warn("fetchHistory: Aguardando userInfo com email.");
+      return; // Não fazer a chamada se não tivermos o email
+    }
     try {
-      const response = await fetch(`/api/full-history?source=${selectedRoulette}`);
-      if (!response.ok) throw new Error(`Erro na API: ${response.statusText}`);
+      const response = await fetch(`/api/full-history?source=${selectedRoulette}&userEmail=${encodeURIComponent(userInfo.email)}`);
+      if (!response.ok) {
+        const errData = await response.json(); // Pega o JSON do erro
+        
+        // O middleware retorna 'requiresSubscription' em caso de falha 403
+        if (response.status === 403 || errData.requiresSubscription) {
+          console.warn('Assinatura inválida ou expirada. Abrindo paywall e deslogando.');
+          setCheckoutUrl(errData.checkoutUrl || '');
+          setIsPaywallOpen(true);
+
+        }
+        
+        throw new Error(errData.message || `Erro na API: ${response.statusText}`);
+      }
       const data = await response.json();
       const convertedData = data.map(item => {
         const num = parseInt(item.signal, 10);
@@ -867,15 +899,16 @@ const App = () => {
       setSpinHistory([]);
       setSelectedResult(null);
     }
-  }, [selectedRoulette]);
+  }, [selectedRoulette, userInfo]);
 
   // Fetch History Effect
   useEffect(() => {
     if (!isAuthenticated) return;
+    if (!userInfo) return;
     fetchHistory();
     const intervalId = setInterval(fetchHistory, 5000);
     return () => clearInterval(intervalId);
-  }, [fetchHistory, isAuthenticated]);
+  }, [fetchHistory, isAuthenticated, userInfo]);
 
   // Popup Handlers
   const handleNumberClick = useCallback((number) => {
@@ -1369,7 +1402,15 @@ const App = () => {
         </div>
       )}
 
-      <NumberStatsPopup isOpen={isPopupOpen} onClose={closePopup} number={popupNumber} stats={popupStats} />
+      {/* <NumberStatsPopup isOpen={isPopupOpen} onClose={closePopup} number={popupNumber} stats={popupStats} /> */}
+      <PaywallModal
+        isOpen={isPaywallOpen}
+        onClose={() => {setIsPaywallOpen(false);handleLogout();}}
+        // O modal espera 'userId', mas nosso sistema usa 'userEmail'
+        // Vamos passar o email para o prop 'userId' que o modal espera.
+        userId={userInfo?.email} 
+        checkoutUrl={checkoutUrl}
+      />
     </>
   );
 };
