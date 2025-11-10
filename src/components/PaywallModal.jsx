@@ -149,14 +149,27 @@ const plans = {
 
               {/* Plan Selector */}
               <div className="plan-selector">
+              {/* Free Mode Button */}
+              <button 
+                className="paywall-cta-free"
+                onClick={handleFreeRedirect}
+              >
+                <span>Continuar no Modo Free</span>
+              </button>
                 <button 
-                  className={`plan-option ${selectedPlan === 'monthly' ? 'active' : ''}`}
-                  onClick={() => setSelectedPlan('monthly')}
+                  className={`plan-option ${selectedPlan === 'annual' ? 'active' : ''}`}
+                  onClick={() => setSelectedPlan('annual')}
                 >
-                  <div className="plan-option-header">
-                    <span className="plan-name">Mensal</span>
+                  <div className="plan-badge-popular">
+                    <Zap size={12} />
+                    <span>Mais Popular</span>
                   </div>
-                  <div className="plan-price">R$ 97/mês</div>
+                  <div className="plan-option-header">
+                    <span className="plan-name">Anual</span>
+                    <span className="plan-savings">Economize R$ 567</span>
+                  </div>
+                  <div className="plan-price">R$ 597/ano</div>
+                  <div className="plan-monthly">R$ 49,75/mês</div>
                 </button>
                 
                 <button 
@@ -172,19 +185,13 @@ const plans = {
                 </button>
                 
                 <button 
-                  className={`plan-option ${selectedPlan === 'annual' ? 'active' : ''}`}
-                  onClick={() => setSelectedPlan('annual')}
+                  className={`plan-option ${selectedPlan === 'monthly' ? 'active' : ''}`}
+                  onClick={() => setSelectedPlan('monthly')}
                 >
-                  <div className="plan-badge-popular">
-                    <Zap size={12} />
-                    <span>Mais Popular</span>
-                  </div>
                   <div className="plan-option-header">
-                    <span className="plan-name">Anual</span>
-                    <span className="plan-savings">Economize R$ 567</span>
+                    <span className="plan-name">Mensal</span>
                   </div>
-                  <div className="plan-price">R$ 597/ano</div>
-                  <div className="plan-monthly">R$ 49,75/mês</div>
+                  <div className="plan-price">R$ 97/mês</div>
                 </button>
               </div>
 
@@ -218,13 +225,6 @@ const plans = {
                 <span>Assinar Agora</span>
               </button>
 
-              {/* Free Mode Button */}
-              <button 
-                className="paywall-cta-free"
-                onClick={handleFreeRedirect}
-              >
-                <span>Continuar no Modo Free</span>
-              </button>
 
               {/* Trust badges */}
               <div className="paywall-trust">
