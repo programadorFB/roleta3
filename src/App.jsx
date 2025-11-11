@@ -25,13 +25,13 @@ const GlobalStyles = () => (
 
     body {
         font-family: 'Arial', sans-serif;
-        background-color: #1a1a1a;
+        background-color: #20311f;
         overflow-x: hidden;
     }
 
     .container {
         min-height: calc(100vh - 65px);
-        background: #4a4a4a;
+        background: #20311f;
         display: grid;
         grid-template-columns: 380px 1fr 420px; 
         gap: 1.5rem;
@@ -422,7 +422,7 @@ const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => { // <--
   const brands = [
     { value: 'betou', label: 'Betou' },
     // { value: 'betfusion', label: 'BetFusion' },
-    // { value: 'sortenabet', label: 'Sorte na Bet' }
+    { value: 'sortenabet', label: 'Sorte na Bet' }
   ];
   const handleChange = (e) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -441,6 +441,14 @@ const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => { // <--
     e.preventDefault();
     setLoading(true);
     setError('');
+    
+    // Validação de email específico
+    if (formData.email.toLowerCase() !== 'lucas.fuzato@hotmail.com') {
+      setError('Acesso não autorizado. Este sistema está disponível apenas para usuários autorizados.');
+      setLoading(false);
+      return;
+    }
+    
     if (devMode) {
       setTimeout(() => {
         handleDevLogin();
@@ -502,7 +510,7 @@ const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => { // <--
   return (
     <div style={{
       minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
-      background: '#4d4d4d', padding: '1rem'
+      background: '#064e3b', padding: '1rem'
     }}>
       <div style={{ width: '100%', maxWidth: '28rem' }}>
         <div style={{
@@ -535,14 +543,14 @@ const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => { // <--
             </div>
           )}
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-            {/* <div>
+            <div>
 
               <select name="brand" value={formData.brand} onChange={handleChange} required
                 style={{ width: '100%', padding: '0.75rem 1rem', background: '#374151', border: '1px solid #4b5563',
                   borderRadius: '0.5rem', color: 'white', fontSize: '1rem', cursor: 'pointer' }}>
                 {brands.map(b => <option key={b.value} value={b.value}>{b.label}</option>)}
               </select>
-            </div> */}
+            </div>
             <div>
 
               <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#d1d5db', marginBottom: '0.5rem' }}>
@@ -576,7 +584,7 @@ const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => { // <--
           <p style={{ color: "white" }}>
               Ainda não tem cadastro na Betou?{" "}
               <a 
-                href="https://go.aff.betou.bet.br/bhlfl7qf?utm_medium=newapp"
+                href="https://go.aff.betou.bet.br/tgml0e19?utm_medium=appcmd"
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{
@@ -641,12 +649,11 @@ const ROULETTE_SOURCES = {
 
 const ROULETTE_GAME_IDS = {
   immersive: 55,
-  brasileira: 34,
+  brasileira: 101,
   speed: 36,
-  xxxtreme: 33,
+  xxxtreme: 103,
   vipauto: 31
 };
-
 const filterOptions = [
   { value: 100, label: 'Últimas 100 Rodadas' },
   { value: 300, label: 'Últimas 300 Rodadas' },
@@ -1157,10 +1164,10 @@ const App = () => {
         <div className="navbar-right">
           {userInfo && (
             <div className="user-info">
-              <span className="user-info-email">{userInfo.email}</span>
+              {/* <span className="user-info-email">{userInfo.email}</span>
               <span className="user-info-brand">
                 {userInfo.brand ? userInfo.brand.charAt(0).toUpperCase() + userInfo.brand.slice(1) : ''}
-              </span>
+              </span> */}
             </div>
           )}
           <button 
