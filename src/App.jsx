@@ -415,12 +415,12 @@ const GlobalStyles = () => (
 );
 
 const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => { // <-- Adicionado setIsPaywallOpen e setCheckoutUrl
-  const [formData, setFormData] = useState({ email: '', password: '', brand: 'betou' });
+  const [formData, setFormData] = useState({ email: '', password: '', brand: 'sornabet' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [devMode, setDevMode] = useState(false);
   const brands = [
-    { value: 'betou', label: 'Betou' },
+    // { value: 'betou', label: 'Betou' },
     // { value: 'betfusion', label: 'BetFusion' },
     { value: 'sortenabet', label: 'Sorte na Bet' }
   ];
@@ -437,10 +437,11 @@ const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => { // <--
   };
 // App.jsx (substitua toda a função handleSubmit)
 
-  const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    
     if (devMode) {
       setTimeout(() => {
         handleDevLogin();
@@ -448,14 +449,14 @@ const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => { // <--
       }, 500);
       return;
     }
+
     try {
-      // --- CORREÇÃO 1 DE 3 ---
-      // Adicionado o prefixo ${API_URL}
-      const response = await fetch(`${API_URL}/login`, { //
+      const response = await fetch(`${API_URL}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify(formData)
       });
+
       if (response.ok) {
         const data = await response.json();
         if (data.jwt) {
@@ -467,26 +468,36 @@ const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => { // <--
           setError('Login bem-sucedido, mas o token (jwt) não foi recebido.');
         }
       } else {
+        // --- AQUI COMEÇA A LÓGICA DE ERRO ---
         const errorText = await response.text();
         let errorMessage;
+
         try {
           const errorJson = JSON.parse(errorText);
-          errorMessage = errorJson.message || `Erro ${response.status}: Resposta JSON inválida.`;
 
-          // --- CORREÇÃO AQUI (Sua correção anterior estava correta) ---
+          // 1. Verificamos primeiro a exceção (Paywall)
           if (errorJson.code === 'FORBIDDEN_SUBSCRIPTION') {
             setCheckoutUrl(errorJson.checkoutUrl || ''); 
-            setIsPaywallOpen(true); 
+            setIsPaywallOpen(true);
+            // Mantemos a mensagem de erro específica para o Paywall
+            errorMessage = errorJson.message || 'Sua assinatura está inativa.';
+          } else {
+            // 2. Para TODOS os outros erros (500, 401, 400, etc.)
+            // definimos a mensagem genérica
+            errorMessage = "E-mail ou senha inválidos.";
           }
-          // --- FIM DA CORREÇÃO ---
-
         } catch (e) {
+          // 3. Se a resposta nem for JSON (ex: um erro 500 com HTML)
+          // também é um erro de login
           console.error("Erro não-JSON recebido do backend:", errorText);
-          errorMessage = `Erro ${response.status}. O servidor retornou uma resposta inesperada.`;
+          errorMessage = "E-mail ou senha inválidos.";
         }
+        
         setError(errorMessage);
+        // --- AQUI TERMINA A LÓGICA DE ERRO ---
       }
     } catch (err) {
+      // Erros de rede (API offline, etc.) permanecem os mesmos
       console.error('Erro de fetch:', err);
       let errorMessage = 'Erro de conexão. ';
       if (err.message.includes('Failed to fetch')) {
@@ -520,9 +531,9 @@ const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => { // <--
             <h2 style={{ fontSize: '2rem', fontWeight: 'bold', color: 'white', marginBottom: '0.5rem' }}>
               Bem-vindo
             </h2>
-            <p style={{ color: '#9ca3af' }}>Este aplicativo é integrado com a casa BETOU. </p>
+            <p style={{ color: '#9ca3af' }}>Este aplicativo é integrado com a casa SORTE NA BET. </p>
             <br/>
-            <p style={{ color: '#9ca3af',marginBottom:"-25px" }}>Faça login com sua conta BETOU para acessar o aplicativo.</p>
+            <p style={{ color: '#9ca3af',marginBottom:"-25px" }}>Faça login com sua conta SORTE NA BET para acessar o aplicativo.</p>
           </div>
           {error && (
             <div style={{
@@ -535,14 +546,14 @@ const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => { // <--
             </div>
           )}
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-            <div>
+            {/* <div>
 
               <select name="brand" value={formData.brand} onChange={handleChange} required
                 style={{ width: '100%', padding: '0.75rem 1rem', background: '#374151', border: '1px solid #4b5563',
                   borderRadius: '0.5rem', color: 'white', fontSize: '1rem', cursor: 'pointer' }}>
                 {brands.map(b => <option key={b.value} value={b.value}>{b.label}</option>)}
               </select>
-            </div>
+            </div> */}
             <div>
 
               <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#d1d5db', marginBottom: '0.5rem' }}>
@@ -574,7 +585,7 @@ const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => { // <--
 
             </div> */}
           <p style={{ color: "white" }}>
-              Ainda não tem cadastro na Betou?{" "}
+              Ainda não tem cadastro na SORTE NA BET?{" "}
               <a 
                 href="https://go.aff.betou.bet.br/bhlfl7qf?utm_medium=newapp"
                 target="_blank"
