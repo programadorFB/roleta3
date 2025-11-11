@@ -535,14 +535,14 @@ const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => { // <--
             </div>
           )}
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-            <div>
+            {/* <div>
 
               <select name="brand" value={formData.brand} onChange={handleChange} required
                 style={{ width: '100%', padding: '0.75rem 1rem', background: '#374151', border: '1px solid #4b5563',
                   borderRadius: '0.5rem', color: 'white', fontSize: '1rem', cursor: 'pointer' }}>
                 {brands.map(b => <option key={b.value} value={b.value}>{b.label}</option>)}
               </select>
-            </div>
+            </div> */}
             <div>
 
               <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#d1d5db', marginBottom: '0.5rem' }}>
@@ -641,9 +641,9 @@ const ROULETTE_SOURCES = {
 
 const ROULETTE_GAME_IDS = {
   immersive: 55,
-  brasileira: 34,
+  brasileira: 101,
   speed: 36,
-  xxxtreme: 33,
+  xxxtreme: 83,
   vipauto: 31
 };
 
@@ -807,6 +807,11 @@ const App = () => {
           if (!gameUrl) gameUrl = data?.launch_options?.game_url;
           if (!gameUrl) gameUrl = data?.game_url;
           if (!gameUrl) gameUrl = data?.url;
+          
+          // --- CORREÇÃO ADICIONADA ---
+          // Verifica a chave 'gameURL' (com U maiúsculo) que a sua API está retornando
+          if (!gameUrl) gameUrl = data?.gameURL; 
+          // --- FIM DA CORREÇÃO ---
           
           if (!gameUrl) {
             const findGameUrl = (obj) => {
