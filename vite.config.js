@@ -7,19 +7,19 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      // Redireciona chamadas de login para o server.js
+      // Redireciona para o SEU BACKEND LOCAL
       '/login': {
-        target: 'https://roleta-fuza.sortehub.online',
+        target: 'http://localhost:3000', // <-- CORREÇÃO
         changeOrigin: true,
       },
-      // Redireciona chamadas do jogo para o server.js
+      // Redireciona para o SEU BACKEND LOCAL
       '/start-game': {
-        target: 'https://roleta-fuza.sortehub.online',
+        target: 'http://localhost:3000', // <-- CORREÇÃO
         changeOrigin: true,
       },
-      // Redireciona chamadas da API (histórico) para o server.js
+      // Redireciona para o SEU BACKEND LOCAL
       '/api': {
-        target: 'https://roleta-fuza.sortehub.online',
+        target: 'http://localhost:3000', // <-- CORREÇÃO
         changeOrigin: true,
       }
     }
