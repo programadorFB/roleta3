@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Lock, Mail, AlertCircle } from 'lucide-react';
-const API_URL = 'https://roleta-fuza.sortehub.online';
+const API_URL = 'http://localhost:3000';
 
 const Login = () => {
   const [formData, setFormData] = useState({
