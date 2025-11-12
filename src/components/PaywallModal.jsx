@@ -26,11 +26,11 @@ const PaywallModal = ({ isOpen, onClose, userId, checkoutUrl }) => {
       installments: '3x R$ 70,04'
     },
     annual: {
-      price: 597,
+      price: 497,
       period: 'ano',
-      checkoutUrl: 'https://pay.hub.la/NGeiiXVSbzSGwjbLzZhT',
-      savings: 'Economize R$ 567',
-      installments: '12x R$ 61,02'
+      checkoutUrl: 'https://pay.hub.la/zwcPAbXDNlfSzhAcs9bg',
+      savings: 'Economize R$ 667',
+      installments: '12x R$ 50,80'
     }
   };
 
