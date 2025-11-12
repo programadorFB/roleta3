@@ -576,7 +576,7 @@ const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => { // <--
           <p style={{ color: "white" }}>
               Ainda não tem cadastro na Betou?{" "}
               <a 
-                href="https://go.aff.betou.bet.br/bhlfl7qf?utm_medium=newapp"
+                href="https://go.aff.betou.bet.br/bhlfl7qf?utm_medium=apprgr"
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{

@@ -1,18 +1,20 @@
-/* PaywallModal.css - Arquivo CSS Completo com nova paleta de cores */
+/* PaywallModal.css - Design Profissional e Clean com Paleta Verde */
 
-/* Cores base para a paleta de cinzas */
+/* Cores base */
 :root {
-  --primary-gray: #4a4a4a; /* Cor principal de destaque (anteriormente azul) */
-  --dark-background: #1a1a1a; /* Fundo mais escuro */
-  --medium-background: #2a2a2a; /* Fundo médio */
-  --light-gray-text: #cccccc; /* Texto mais claro */
-  --dark-gray-text: #aaaaaa; /* Texto padrão */
-  --border-color: #3a3a3a; /* Cor da borda */
-  --overlay-background: rgba(0, 0, 0, 0.9); /* Overlay escuro */
-  --success-green: #4ade80; /* Verde para sucesso/economia */
-  --danger-red: #ff6b6b;   /* Vermelho para perigo/cancelado */
+  --primary-green: #4ade80;
+  --light-green: #2E5D2E;
+  --dark-background: #0f1c0f;
+  --medium-background: #152715;
+  --light-text: #e0e0e0;
+  --dark-text: #fcfcfc;
+  --border-color: #244b24;
+  --overlay-background: rgba(0, 0, 0, 0.9);
+  --success-green-bright: #4ade80;
+  --danger-red: #ff6b6b;
 }
 
+/* Overlay */
 .paywall-overlay {
   position: fixed;
   top: 0;
@@ -38,10 +40,11 @@
   }
 }
 
+/* Modal Container */
 .paywall-modal {
   background: linear-gradient(135deg, var(--dark-background) 0%, var(--medium-background) 100%);
   border-radius: 24px;
-  max-width: 600px;
+  max-width: 540px;
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
@@ -63,7 +66,7 @@
 
 /* Header */
 .paywall-header {
-  padding: 20px;
+  padding: 16px 20px;
   display: flex;
   justify-content: flex-end;
 }
@@ -71,14 +74,14 @@
 .paywall-close {
   background: rgba(255, 255, 255, 0.05);
   border: none;
-  border-radius: 12px;
-  width: 40px;
-  height: 40px;
+  border-radius: 10px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: var(--light-gray-text);
+  color: var(--light-text);
   transition: all 0.2s;
 }
 
@@ -89,21 +92,21 @@
 
 /* Content */
 .paywall-content {
-  padding: 0 40px 40px;
+  padding: 0 32px 32px;
 }
 
 /* Loading State */
 .paywall-loading {
   text-align: center;
   padding: 60px 20px;
-  color: var(--dark-gray-text);
+  color: var(--dark-text);
 }
 
 .spinner {
   width: 48px;
   height: 48px;
   border: 4px solid rgba(255, 255, 255, 0.1);
-  border-top-color: var(--primary-gray); /* Usando a cor principal aqui */
+  border-top-color: var(--primary-green);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 20px;
@@ -117,15 +120,15 @@
 
 /* Badge */
 .paywall-badge {
-  width: 96px;
-  height: 96px;
-  background: linear-gradient(135deg, var(--primary-gray) 0%, #3a3a3a 100%); /* Gradiente de cinza */
+  width: 72px;
+  height: 72px;
+  background: linear-gradient(135deg, var(--primary-green) 0%, var(--light-green) 100%);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 24px;
-  box-shadow: 0 10px 30px rgba(74, 74, 74, 0.3); /* Sombra cinza */
+  margin: 0 auto 20px;
+  box-shadow: 0 8px 24px rgba(74, 222, 128, 0.25);
 }
 
 .badge-icon {
@@ -134,47 +137,48 @@
 
 /* Title & Subtitle */
 .paywall-title {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 700;
   color: #fff;
   text-align: center;
-  margin: 0 0 12px;
+  margin: 0 0 8px;
   line-height: 1.2;
 }
 
 .paywall-subtitle {
-  font-size: 16px;
-  color: var(--dark-gray-text);
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.7);
   text-align: center;
-  margin: 0 0 32px;
+  margin: 0 0 24px;
   line-height: 1.5;
 }
 
 /* Status Section */
 .paywall-status {
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 }
 
 .status-card {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--border-color);
   border-radius: 12px;
-  padding: 16px;
+  padding: 12px 16px;
   text-align: center;
 }
 
 .status-label {
-  font-size: 12px;
+  font-size: 11px;
   color: rgba(255, 255, 255, 0.5);
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  margin: 0 0 8px;
+  margin: 0 0 6px;
+  font-weight: 500;
 }
 
 .status-value {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
-  color: var(--danger-red); /* Mantém vermelho para status de cancelamento */
+  color: var(--danger-red);
   margin: 0;
 }
 
@@ -184,33 +188,38 @@
 }
 
 .features-title {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   color: #fff;
-  margin: 0 0 16px;
+  margin: 0 0 12px;
 }
 
 .features-list {
   list-style: none;
   padding: 0;
   margin: 0;
+  display: grid;
+  gap: 8px;
 }
 
 .feature-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  color: var(--light-gray-text);
+  gap: 10px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  color: var(--light-text);
+  font-size: 14px;
+  transition: all 0.2s;
 }
 
-.feature-item:last-child {
-  border-bottom: none;
+.feature-item:hover {
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .feature-icon {
-  color: var(--primary-gray); /* Ícone com a cor principal */
+  color: var(--primary-green);
   flex-shrink: 0;
 }
 
@@ -218,15 +227,15 @@
 .plan-selector {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 32px;
+  gap: 10px;
+  margin-bottom: 24px;
 }
 
 .plan-option {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.03);
   border: 2px solid var(--border-color);
   border-radius: 12px;
-  padding: 16px 20px;
+  padding: 14px 16px;
   cursor: pointer;
   transition: all 0.3s;
   position: relative;
@@ -235,113 +244,88 @@
 }
 
 .plan-option:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: var(--primary-gray); /* Borda da cor principal */
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--primary-green);
   transform: translateY(-2px);
 }
 
 .plan-option.active {
-  background: linear-gradient(135deg, rgba(74, 74, 74, 0.1) 0%, rgba(58, 58, 58, 0.1) 100%); /* Gradiente sutil de cinza */
-  border-color: var(--primary-gray);
-  box-shadow: 0 8px 24px rgba(74, 74, 74, 0.2);
+  background: linear-gradient(135deg, rgba(74, 222, 128, 0.08) 0%, rgba(46, 93, 46, 0.08) 100%);
+  border-color: var(--primary-green);
+  box-shadow: 0 8px 24px rgba(74, 222, 128, 0.15);
   transform: translateY(-2px);
 }
 
 .plan-badge-popular {
   position: absolute;
-  top: -10px;
-  right: 16px;
-  background: linear-gradient(135deg, var(--primary-gray) 0%, #3a3a3a 100%); /* Gradiente de cinza */
+  top: -8px;
+  right: 12px;
+  background: linear-gradient(135deg, var(--primary-green) 0%, var(--light-green) 100%);
   color: #fff;
-  padding: 4px 12px;
+  padding: 3px 10px;
   border-radius: 12px;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
   display: flex;
   align-items: center;
   gap: 4px;
-  box-shadow: 0 4px 12px rgba(74, 74, 74, 0.3); /* Sombra cinza */
+  box-shadow: 0 4px 12px rgba(74, 222, 128, 0.3);
 }
 
 .plan-option-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
 }
 
 .plan-name {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   color: #fff;
 }
 
 .plan-savings {
-  font-size: 12px;
-  color: var(--success-green);
+  font-size: 11px;
+  color: var(--success-green-bright);
   font-weight: 600;
-  background: rgba(74, 222, 128, 0.1);
-  padding: 4px 8px;
+  background: rgba(74, 222, 128, 0.12);
+  padding: 3px 8px;
   border-radius: 6px;
   border: 1px solid rgba(74, 222, 128, 0.2);
 }
 
 .plan-price {
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--primary-gray); /* Preço com a cor principal */
-  margin-bottom: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.3;
 }
 
 .plan-monthly {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.6);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--primary-green);
+  margin-top: 2px;
 }
 
 /* Pricing Section */
 .paywall-pricing {
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .price-card {
-  background: linear-gradient(135deg, rgba(74, 74, 74, 0.1) 0%, rgba(58, 58, 58, 0.1) 100%); /* Gradiente sutil de cinza */
-  border: 2px solid var(--primary-gray);
+  background: linear-gradient(135deg, rgba(74, 222, 128, 0.08) 0%, rgba(46, 93, 46, 0.08) 100%);
+  border: 2px solid var(--primary-green);
   border-radius: 16px;
-  padding: 24px;
+  padding: 20px;
   position: relative;
 }
 
-.savings-badge {
-  text-align: center;
-  color: var(--success-green);
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 16px;
-  padding: 8px;
-  background: rgba(74, 222, 128, 0.1);
-  border-radius: 8px;
-  border: 1px solid rgba(74, 222, 128, 0.2);
-}
-
-.price-badge {
-  position: absolute;
-  top: -12px;
-  right: 20px;
-  background: linear-gradient(135deg, var(--primary-gray) 0%, #3a3a3a 100%); /* Gradiente de cinza */
-  color: #fff;
-  padding: 6px 16px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
 .price-title {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 600;
   color: #fff;
   margin: 0 0 16px;
@@ -350,65 +334,94 @@
 
 .price-value {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  gap: 8px;
+}
+
+.price-installments {
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--primary-green);
+  line-height: 1;
+}
+
+.price-total {
+  display: flex;
   align-items: baseline;
   justify-content: center;
-  margin-bottom: 20px;
 }
 
 .price-currency {
-  font-size: 24px;
-  color: var(--dark-gray-text);
-  margin-right: 4px;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-right: 2px;
 }
 
 .price-amount {
-  font-size: 56px;
-  font-weight: 700;
-  color: var(--primary-gray); /* Valor do preço com a cor principal */
+  font-size: 20px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.5);
   line-height: 1;
 }
 
 .price-period {
-  font-size: 18px;
-  color: rgba(255, 255, 255, 0.6);
-  margin-left: 4px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-left: 2px;
+}
+
+.savings-badge {
+  text-align: center;
+  color: var(--success-green-bright);
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  padding: 6px 12px;
+  background: rgba(74, 222, 128, 0.12);
+  border-radius: 8px;
+  border: 1px solid rgba(74, 222, 128, 0.2);
 }
 
 .price-features {
   list-style: none;
   padding: 0;
   margin: 0;
+  display: grid;
+  gap: 6px;
 }
 
 .price-features li {
-  padding: 8px 0;
-  color: var(--light-gray-text);
-  font-size: 14px;
+  padding: 6px 0;
+  color: var(--light-text);
+  font-size: 13px;
 }
 
 /* CTA Button */
 .paywall-cta {
   width: 100%;
-  background: linear-gradient(135deg, var(--primary-gray) 0%, #3a3a3a 100%); /* Gradiente de cinza */
+  background: linear-gradient(135deg, var(--primary-green) 0%, var(--light-green) 100%);
   color: #fff;
   border: none;
   border-radius: 12px;
-  padding: 18px 32px;
-  font-size: 18px;
+  padding: 16px 28px;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 10px;
   transition: all 0.3s;
-  box-shadow: 0 10px 30px rgba(74, 74, 74, 0.3); /* Sombra cinza */
-  margin-bottom: 12px;
+  box-shadow: 0 8px 24px rgba(74, 222, 128, 0.25);
+  margin-bottom: 16px;
 }
 
 .paywall-cta:hover {
   transform: translateY(-2px);
-  box-shadow: 0 15px 40px rgba(74, 74, 74, 0.4); /* Sombra cinza mais intensa */
+  box-shadow: 0 12px 32px rgba(74, 222, 128, 0.35);
 }
 
 .paywall-cta:active {
@@ -422,78 +435,90 @@
 }
 
 /* Free CTA Button */
+@keyframes pulse-yellow {
+  0% {
+    box-shadow: 0 0 0 0px rgba(255, 255, 0, 0.7);
+  }
+  100% {
+    box-shadow: 0 0 0 12px rgba(255, 255, 0, 0);
+  }
+}
+
 .paywall-cta-free {
   width: 100%;
   background: transparent;
-  color: var(--dark-gray-text);
+  color: var(--dark-text);
   border: 1px solid var(--border-color);
   border-radius: 12px;
-  padding: 18px 32px;
-  font-size: 16px;
+  padding: 14px 24px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 8px;
   transition: all 0.3s;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
+  animation: pulse-yellow 2s infinite;
 }
 
 .paywall-cta-free:hover {
   background: rgba(255, 255, 255, 0.05);
   color: #fff;
   border-color: rgba(255, 255, 255, 0.5);
+  animation: none;
 }
-
 
 /* Trust Badges */
 .paywall-trust {
   display: flex;
   justify-content: center;
-  gap: 24px;
+  gap: 20px;
   flex-wrap: wrap;
   margin-bottom: 16px;
+  padding: 12px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .trust-item {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 12px;
+  gap: 6px;
+  font-size: 11px;
   color: rgba(255, 255, 255, 0.6);
 }
 
 .trust-item svg {
-  color: var(--primary-gray); /* Ícones de confiança com a cor principal */
+  color: var(--primary-green);
 }
 
 /* Footer */
 .paywall-footer {
   text-align: center;
-  font-size: 12px;
+  font-size: 11px;
   color: rgba(255, 255, 255, 0.4);
   margin: 0;
   line-height: 1.5;
 }
 
-/* Scrollbar Customization */
+/* Scrollbar */
 .paywall-modal::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 .paywall-modal::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 3px;
 }
 
 .paywall-modal::-webkit-scrollbar-thumb {
-  background: rgba(74, 74, 74, 0.3); /* Scrollbar com cinza */
-  border-radius: 4px;
+  background: rgba(74, 222, 128, 0.3);
+  border-radius: 3px;
 }
 
 .paywall-modal::-webkit-scrollbar-thumb:hover {
-  background: rgba(74, 74, 74, 0.5); /* Scrollbar com cinza mais intenso */
+  background: rgba(74, 222, 128, 0.5);
 }
 
 /* Responsive Design */
@@ -514,45 +539,59 @@
 
   .paywall-subtitle {
     font-size: 14px;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
+  }
+
+  .paywall-badge {
+    width: 64px;
+    height: 64px;
+  }
+
+  .badge-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .price-installments {
+    font-size: 40px;
   }
 
   .price-amount {
-    font-size: 42px;
+    font-size: 18px;
   }
 
   .price-currency {
-    font-size: 20px;
+    font-size: 14px;
   }
 
   .price-period {
-    font-size: 16px;
+    font-size: 12px;
   }
   
   .plan-name {
-    font-size: 16px;
+    font-size: 15px;
   }
   
   .plan-price {
-    font-size: 20px;
-  }
-
-  .plan-monthly {
     font-size: 13px;
   }
 
+  .plan-monthly {
+    font-size: 18px;
+  }
+
   .plan-option {
-    padding: 14px 16px;
+    padding: 12px 14px;
   }
 
   .paywall-cta {
-    padding: 16px 24px;
-    font-size: 16px;
+    padding: 14px 20px;
+    font-size: 15px;
   }
 
   .paywall-cta-free {
-    padding: 16px 24px;
-    font-size: 15px;
+    padding: 12px 20px;
+    font-size: 13px;
   }
 
   .paywall-trust {
@@ -560,7 +599,12 @@
   }
 
   .trust-item {
-    font-size: 11px;
+    font-size: 10px;
+  }
+
+  .feature-item {
+    font-size: 13px;
+    padding: 6px 10px;
   }
 }
 
@@ -574,33 +618,27 @@
   }
 
   .paywall-header {
-    padding: 16px;
+    padding: 12px 16px;
   }
 
-  .paywall-badge {
-    width: 80px;
-    height: 80px;
-  }
-
-  .badge-icon {
-    width: 40px;
-    height: 40px;
+  .paywall-content {
+    padding: 0 20px 20px;
   }
 
   .plan-savings {
     font-size: 10px;
-    padding: 3px 6px;
+    padding: 2px 6px;
   }
 
   .plan-badge-popular {
-    font-size: 10px;
-    padding: 3px 8px;
+    font-size: 9px;
+    padding: 2px 8px;
   }
 }
 
-/* Dark mode adjustments (if needed) */
+/* Dark mode adjustments */
 @media (prefers-color-scheme: dark) {
   .paywall-modal {
-    background: linear-gradient(135deg, #101010 0%, #151515 100%); /* Fundo ainda mais escuro para dark mode */
+    background: linear-gradient(135deg, #0a140a 0%, #0e1b0e 100%);
   }
 }

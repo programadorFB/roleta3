@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { 
-    Flame, Snowflake, Layers, AlignCenter, TrendingUp, BarChart3, Target, PieChart, Activity, Cpu, Info // <-- 1. ÍCONE DE CADEADO REMOVIDO
+    Flame, Snowflake, Layers, AlignCenter, TrendingUp, BarChart3, Target, PieChart, Activity, Cpu, Info, Users, BookOpen // <-- Adicionado BookOpen para Catalogação
 } from 'lucide-react';
 import styles from './DeepAnalysisPanel.module.css';
 import { useNotifications } from '../contexts/NotificationContext'; // Importe o hook de notificações
@@ -12,6 +12,8 @@ import NeighborAnalysis from './NeighborAnalysis';
 import TerminalAnalysis from './TerminalAnalysis';
 import AdvancedPatternsAnalysis from './AdvancedPatternsAnalysis';
 import FrequencyTable from './FrequencyTable'; // <-- 1. IMPORTADO AQUI
+import GroupStrategiesAnalysis from './GroupStrategiesAnalysis'; // <-- NOVO: Análise de Grupos
+import CatalogacaoTable from './Catalogacaotable'; // <-- NOVO: Tabela de Catalogação
 
 import { UpdateCountdown } from './VisualIndicators';
 
@@ -329,13 +331,31 @@ const sleepers = Object.entries(lastSeenIndex)
                 </button>
 
                 {/* Você também pode querer um botão para a aba 'visual' */}
-                <button
+                {/* <button
                     onClick={() => setActiveTab('visual')}
                     style={getTabStyle('visual')}
                 >
                     <Activity size={18} />
                     Status
                 </button>
+                 */}
+                {/* NOVO: Botão para análise de Grupos */}
+                {/* <button
+                    onClick={() => setActiveTab('groups')}
+                    style={getTabStyle('groups')}
+                >
+                    <Users size={18} />
+                    Grupos
+                </button> */}
+                
+                {/* NOVO: Botão para Catalogação */}
+                {/* <button
+                    onClick={() => setActiveTab('catalog')}
+                    style={getTabStyle('catalog')}
+                >
+                    <BookOpen size={18} />
+                    Catálogo
+                </button> */}
                 
             </div>
 
@@ -467,20 +487,27 @@ const sleepers = Object.entries(lastSeenIndex)
                 <SectorsAnalysis spinHistory={spinHistory} />
             )}
             
-            {activeTab === 'visual' && (
-                <>
-                    <h3 className={styles['dashboard-title']}>
-                        Indicadores Visuais
-                    </h3>
-                    <StatCard title="Contador de Atualização" icon={<Activity size={24} className={styles.infoIcon} />}>
-                        {/* 5000ms = 5 segundos (deve bater com seu 'fetchHistory' do App.jsx) */}
-                        <UpdateCountdown countdownKey={spinHistory.length} duration={5000} />
-                    </StatCard>
-                   
-                </>
-            )}
-        </div>
-    );
-};
-
-export default DeepAnalysisPanel;
+                        {activeTab === 'visual' && (
+                            <>
+                                <h3 className={styles['dashboard-title']}>
+                                    Indicadores Visuais
+                                </h3>
+                                <StatCard title="Contador de Atualização" icon={<Activity size={24} className={styles.infoIcon} />}>
+                                    {/* 5000ms = 5 segundos (deve bater com seu 'fetchHistory' do App.jsx) */}
+                                    <UpdateCountdown countdownKey={spinHistory.length} duration={5000} />
+                                </StatCard>
+                            </>
+                        )}
+                        
+                        {activeTab === 'groups' && (
+                            <GroupStrategiesAnalysis spinHistory={spinHistory} />
+                        )}
+                        
+                        {activeTab === 'catalog' && (
+                            <CatalogacaoTable spinHistory={spinHistory} />
+                        )}
+                    </div>
+                );
+            };
+            
+            export default DeepAnalysisPanel;
