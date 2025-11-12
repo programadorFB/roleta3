@@ -651,9 +651,9 @@ const ROULETTE_SOURCES = {
 
   immersive: '🌟 Immersive Roulette',
   lightning: '⚡ Lightning Roulette',
-  reddoor: '🚪 Red Door Roulette',
+
   aovivo: '🔴 Roleta ao Vivo',
-  brasileira_playtech: '🇧🇷 Roleta Brasileira - Playtech',
+
   brasileira: '🇧🇷 Roleta Brasileira - Pragmatic',
   relampago: '⚡ Roleta Relâmpago',
   speedauto: '💨 Speed Auto Roulette',
