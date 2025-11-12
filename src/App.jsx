@@ -643,19 +643,42 @@ const getNumberColor = (num) => {
 };
 
 const ROULETTE_SOURCES = {
-  immersive: '🌟 Roleta Immersive',
-  brasileira: '🇧🇷 Roleta Brasileira',
+  // --- Lista de 16 itens ---
+  auto: '🤖 Auto Roulette',
+  vipauto: '🚘 Auto Roulette Vip',
+
+  malta: '🇲🇹 Casino Malta Roulette',
+
+  immersive: '🌟 Immersive Roulette',
+  lightning: '⚡ Lightning Roulette',
+  reddoor: '🚪 Red Door Roulette',
+  aovivo: '🔴 Roleta ao Vivo',
+  brasileira_playtech: '🇧🇷 Roleta Brasileira - Playtech',
+  brasileira: '🇧🇷 Roleta Brasileira - Pragmatic',
+  relampago: '⚡ Roleta Relâmpago',
+  speedauto: '💨 Speed Auto Roulette',
   speed: '💨 Speed Roulette',
-  xxxtreme: '⚡ Xxxtreme Lightning',
-  vipauto: '🚘 Vip Auto Roulette'
+  viproulette: '💎 Vip Roulette',
+  xxxtreme: '⚡ XXXtreme Lightning Roulette'
 };
 
 const ROULETTE_GAME_IDS = {
+  // --- IDs de Jogo para os 16 itens (do JSON) ---
+  auto: 120,
+  vipauto: 31,
+
+  malta: 80,
   immersive: 55,
-  brasileira: 34,
+  lightning: 33,
+  reddoor: 35,
+  aovivo: 34,
+  brasileira_playtech: 102,
+  brasileira: 101,
+  relampago: 81,
+  speedauto: 82,
   speed: 36,
-  xxxtreme: 33,
-  vipauto: 31
+  viproulette: 32,
+  xxxtreme: 83
 };
 
 const filterOptions = [
