@@ -1085,14 +1085,14 @@ const App = () => {
         <div className="navbar-left">
         </div>
         <div className="navbar-right">
-          {userInfo && (
+          {/* {userInfo && (
             <div className="user-info">
               <span className="user-info-email">{userInfo.email}</span>
               <span className="user-info-brand">
                 {userInfo.brand ? userInfo.brand.charAt(0).toUpperCase() + userInfo.brand.slice(1) : ''}
               </span>
             </div>
-          )}
+          )} */}
           <button 
             onClick={handleLogout}
             className="logout-btn"
