@@ -805,6 +805,7 @@ const App = () => {
           if (!gameUrl) gameUrl = data?.launchOptions?.launch_options?.game_url;
           if (!gameUrl) gameUrl = data?.launch_options?.game_url;
           if (!gameUrl) gameUrl = data?.game_url;
+          if (!gameUrl) gameUrl = data?.gameURL;
           if (!gameUrl) gameUrl = data?.url;
           
           // 3. Busca recursiva (se necessário)
