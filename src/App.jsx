@@ -415,7 +415,7 @@ const GlobalStyles = () => (
 );
 
 const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => { // <-- Adicionado setIsPaywallOpen e setCheckoutUrl
-  const [formData, setFormData] = useState({ email: '', password: '', brand: 'sornabet' });
+  const [formData, setFormData] = useState({ email: '', password: '', brand: 'sortenabet' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [devMode, setDevMode] = useState(false);
@@ -840,6 +840,7 @@ const App = () => {
           gameUrl = data?.launchOptions?.launch_options?.game_url;
           if (!gameUrl) gameUrl = data?.launch_options?.game_url;
           if (!gameUrl) gameUrl = data?.game_url;
+          if (!gameUrl) gameUrl = data?.gameURL;
           if (!gameUrl) gameUrl = data?.url;
           
           if (!gameUrl) {
