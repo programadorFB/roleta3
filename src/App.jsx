@@ -587,7 +587,7 @@ const handleSubmit = async (e) => {
           <p style={{ color: "white" }}>
               Ainda não tem cadastro na SORTE NA BET?{" "}
               <a 
-                href="https://go.aff.betou.bet.br/bhlfl7qf?utm_medium=newapp"
+                href="https://go.aff.sortenabet.bet.br/2lqvuynt?utm_medium=app"
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{
