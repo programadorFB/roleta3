@@ -807,7 +807,7 @@ const App = () => {
   }, []);
 
   // Launch Game Handler
-  const handleLaunchGame = async () => {
+const handleLaunchGame = async () => {
     setIsLaunching(true);
     setLaunchError('');
     const gameId = ROULETTE_GAME_IDS[selectedRoulette];
@@ -824,24 +824,28 @@ const App = () => {
       const response = await fetch(`${API_URL}/start-game/${gameId}`, { //
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${jwtToken}`
+          'Authorization': `Bearer ${jwtToken}` //
         }
       });
   
       const rawResponseText = await response.text();
       console.log('🔍 Resposta completa do start-game:', rawResponseText);
   
-      if (response.ok) {
+      if (response.ok) { //
         try {
           const data = JSON.parse(rawResponseText);
           console.log('📦 Dados parseados:', data);
   
           let gameUrl = null;
-          gameUrl = data?.launchOptions?.launch_options?.game_url;
-          if (!gameUrl) gameUrl = data?.launch_options?.game_url;
-          if (!gameUrl) gameUrl = data?.game_url;
-          if (!gameUrl) gameUrl = data?.gameURL;
-          if (!gameUrl) gameUrl = data?.url;
+          gameUrl = data?.launchOptions?.launch_options?.game_url; //
+          if (!gameUrl) gameUrl = data?.launch_options?.game_url; //
+          if (!gameUrl) gameUrl = data?.game_url; //
+          if (!gameUrl) gameUrl = data?.url; //
+          
+          // --- CORREÇÃO ADICIONADA ---
+          // Verifica a chave 'gameURL' (com U maiúsculo) que a sua API está retornando
+          if (!gameUrl) gameUrl = data?.gameURL; //
+          // --- FIM DA CORREÇÃO ---
           
           if (!gameUrl) {
             const findGameUrl = (obj) => {
@@ -872,14 +876,30 @@ const App = () => {
           setLaunchError('Resposta da API não é um JSON válido: ' + rawResponseText.substring(0, 100));
         }
       } else {
-        console.error("❌ Erro HTTP:", response.status, rawResponseText);
-        setLaunchError(`Erro ${response.status} do servidor: ${rawResponseText.substring(0, 100)}`);
+        // --- INÍCIO DA MODIFICAÇÃO PARA ERRO 401 ---
+        if (response.status === 401) {
+          // Erro 401: Não autorizado (Sessão expirou)
+          console.error("❌ Erro 401 (Não Autorizado):", rawResponseText);
+          setLaunchError('Sua sessão expirou. Por favor, faça login novamente.');
+          
+          // Desloga o usuário automaticamente após um curto delay
+          // para que ele possa ler a mensagem de erro.
+          setTimeout(() => {
+            handleLogout(); // Chama a função de logout definida no App
+          }, 2500); // 2.5 segundos
+
+        } else {
+          // Outros erros HTTP (404, 500, etc.)
+          console.error("❌ Erro HTTP:", response.status, rawResponseText);
+          setLaunchError(`Erro ${response.status} do servidor: ${rawResponseText.substring(0, 100)}`); //
+        }
+        // --- FIM DA MODIFICAÇÃO ---
       }
     } catch (err) {
       console.error('❌ Erro de rede:', err);
-      setLaunchError('Erro de conexão: ' + err.message);
+      setLaunchError('Erro de conexão: ' + err.message); //
     } finally {
-      setIsLaunching(false);
+      setIsLaunching(false); //
     }
   };
 
