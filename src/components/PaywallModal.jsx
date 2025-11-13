@@ -166,12 +166,12 @@ const PaywallModal = ({ isOpen, onClose, userId, checkoutUrl }) => {
                   </div>
                   <div className="plan-option-header">
                     <span className="plan-name">Anual</span>
-                    <span className="plan-savings">Economize R$ 567</span>
+                    <span className="plan-savings">Economize R$ 667</span>
                   </div>
                   {plans.annual.installments && (
                     <div className="plan-monthly">{plans.annual.installments}</div>
                   )}
-                  <div className="plan-price">R$ 597/ano</div>
+                  <div className="plan-price">R$ 497/ano</div>
                 </button>
 
                 <button 
