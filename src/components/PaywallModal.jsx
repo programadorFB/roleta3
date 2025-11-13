@@ -2,7 +2,7 @@
 // Componente React para exibir modal de assinatura - Design Profissional e Clean
 
 import React, { useState, useEffect } from 'react';
-import { X, Check, CreditCard, Shield, Zap } from 'lucide-react';
+import { X, Check, CreditCard, Shield, Zap, Info } from 'lucide-react'; // Ícone 'Info' adicionado
 import './PaywallModal.css';
 
 const PaywallModal = ({ isOpen, onClose, userId, checkoutUrl }) => {
@@ -230,6 +230,13 @@ const PaywallModal = ({ isOpen, onClose, userId, checkoutUrl }) => {
                   </ul>
                 </div>
               </div>
+
+              {/* --- NOVO AVISO DE E-MAIL --- */}
+              <div className="paywall-email-warning">
+                <Info size={18} /> 
+                <span>Importante: A compra deve ser realizada com o <strong>mesmo e-mail</strong> de acesso da plataforma.</span>
+              </div>
+              {/* --- FIM DO NOVO AVISO --- */}
 
               {/* CTA Button */}
               <button 

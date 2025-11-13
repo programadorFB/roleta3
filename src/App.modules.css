@@ -39,7 +39,19 @@ body {
 .mobile-tooltip-content span {
   white-space: pre-wrap; /* Garante a quebra de linha */
 }
-
+.WellCome{
+  /* position: fixed; */
+  /* grid-column: 2 / span 2; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 1rem;
+  color: #d1d5db;
+  padding: 2rem;
+  text-align: center;
+  border: 2px dashed #4b5563;
+  min-height: '400px'}
 @keyframes fadeIn {
   from {
     opacity: 0;
