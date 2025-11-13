@@ -1348,21 +1348,7 @@ const handleLaunchGame = async () => {
               {/* Se 'gameUrl' ESTIVER vazia, mostra o "Bem-vindo" */}
               <div 
                 className="WellCome" // Usa a classe do seu CSS
-                style={{ 
-                  gridColumn: '2 / span 2', // Ocupa as colunas 2 e 3
-                  
-                  // Estilos do seu CSS .WellCome para garantir que funcione
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  background: 'rgba(0, 0, 0, 0.2)',
-                  borderRadius: '1rem',
-                  color: '#d1d5db',
-                  padding: '2rem',
-                  textAlign: 'center',
-                  border: '2px dashed #4b5563',
-                  minHeight: '400px' // Mantém uma altura mínima
-                }} 
+                
               >
                 <div>
                   <h2 style={{ fontSize: '1.5rem', color: '#fde047', marginBottom: '1rem' }}>
