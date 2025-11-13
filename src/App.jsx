@@ -1348,7 +1348,27 @@ const App = () => {
                               src={gameUrl} 
                               title="Jogo de Roleta" 
                               className="game-iframe"
-                              allowFullScreen 
+                              allowFullScreen
+                              
+                              // ✅ CORREÇÕES PARA PREVENIR TELA VERDE EM TODOS OS NAVEGADORES
+                              sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-modals allow-presentation"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen; web-share"
+                              loading="lazy"
+                              referrerPolicy="no-referrer-when-downgrade"
+                              
+                              // Estilos inline para forçar renderização correta
+                              style={{
+                                transform: 'translateZ(0)',
+                                WebkitTransform: 'translateZ(0)',
+                                MozTransform: 'translateZ(0)',
+                                msTransform: 'translateZ(0)',
+                                OTransform: 'translateZ(0)',
+                                backfaceVisibility: 'hidden',
+                                WebkitBackfaceVisibility: 'hidden',
+                                MozBackfaceVisibility: 'hidden',
+                                willChange: 'transform',
+                                imageRendering: 'auto'
+                              }}
                             />
                           </div>
                       )}
