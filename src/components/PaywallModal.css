@@ -399,6 +399,34 @@
   font-size: 13px;
 }
 
+/* --- NOVO ESTILO DE AVISO --- */
+.paywall-email-warning {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-color);
+  color: var(--light-text);
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 1.4;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.paywall-email-warning svg {
+  flex-shrink: 0;
+  color: var(--primary-green);
+}
+
+.paywall-email-warning strong {
+  color: #fff;
+  font-weight: 600;
+}
+/* --- FIM DO NOVO ESTILO --- */
+
+
 /* CTA Button */
 .paywall-cta {
   width: 100%;
