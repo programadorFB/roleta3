@@ -557,7 +557,7 @@ const handleSubmit = async (e) => {
             <div>
 
               <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#d1d5db', marginBottom: '0.5rem' }}>
-                E-mail Betou
+                E-mail Sorte na Bet
               </label>
               <div style={{ position: 'relative' }}>
                 <Mail size={20} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: '#9ca3af' }} />
@@ -568,7 +568,7 @@ const handleSubmit = async (e) => {
             </div>
             <div>
               <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#d1d5db', marginBottom: '0.5rem' }}>
-                Senha Betou
+                Senha Sorte na Bet
               </label>
               <div style={{ position: 'relative' }}>
                 <Lock size={20} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: '#9ca3af' }} />
