@@ -30,12 +30,21 @@ const app = express();
 
 // --- CONSTANTES ---
 const API_URLS = {
-    immersive: 'https://apptemporario-production.up.railway.app/api/0194b479-654d-70bd-ac50-9c5a9b4d14c5',
-    brasileira: 'https://apptemporario-production.up.railway.app/api/0194b473-2ab3-778f-89ee-236e803f3c8e',
-    default: 'https://apptemporario-production.up.railway.app/api/0194b473-4604-7458-bb18-e3fc562980c2',
-    speed: 'https://apptemporario-production.up.railway.app/api/0194b473-c347-752f-9eaf-783721339479',
-    xxxtreme: 'https://apptemporario-production.up.railway.app/api/0194b478-5ba0-7110-8179-d287b2301e2e',
-    vipauto: 'https://apptemporario-production.up.railway.app/api/0194b473-9044-772b-a6fc-38236eb08b42'
+    // --- Lista Filtrada ---
+    immersive: 'https://apptemporario-production.up.railway.app/api/0194b479-654d-70bd-ac50-9c5a9b4d14c5', // Immersive Roulette
+    brasileira: 'https://apptemporario-production.up.railway.app/api/0194b473-2ab3-778f-89ee-236e803f3c8e', // Roleta Brasileira
+    speed: 'https://apptemporario-production.up.railway.app/api/0194b473-c347-752f-9eaf-783721339479', // Speed Roulette
+    xxxtreme: 'https://apptemporario-production.up.railway.app/api/0194b478-5ba0-7110-8179-d287b2301e2e', // XXXtreme Lightning Roulette
+    vipauto: 'https://apptemporario-production.up.railway.app/api/0194b473-9044-772b-a6fc-38236eb08b42', // Auto Roulette Vip
+    auto: 'https://apptemporario-production.up.railway.app/api/0194b471-1645-749e-9214-be0342035f6f', // Auto Roulette
+    
+    vip: 'https://apptemporario-production.up.railway.app/api/0194b472-6b93-74be-9260-7e407f5f1103', // Roleta Vip
+    lightning: 'https://apptemporario-production.up.railway.app/api/0194b472-7d68-75ea-b249-1422258f4d4c', // Lightning Roulette
+    aovivo: 'https://apptemporario-production.up.railway.app/api/0194b473-1738-70dd-84a9-f1ddd4f00678', // Roleta ao Vivo
+    speedauto: 'https://apptemporario-production.up.railway.app/api/0194b473-3139-770c-841f-d026ce7ed01f', // Speed Auto Roulette!!!!!!!!!!!!!
+    viproulette: 'https://apptemporario-production.up.railway.app/api/0194b474-bb9a-7451-b430-c451b14de1de', // Vip Roulette
+    relampago: 'https://apptemporario-production.up.railway.app/api/0194b474-d82f-76e0-9242-70f601984069', // Roleta Relâmpago
+    malta: 'https://apptemporario-production.up.railway.app/api/0194b476-6091-730c-b971-7e66d9d8c44a' // Casino Malta Roulette
 };
 const FETCH_INTERVAL_MS = 5000;
 const DEFAULT_AUTH_PROXY_TARGET = process.env.AUTH_PROXY_TARGET || 'https://api.appbackend.tech';
@@ -60,7 +69,33 @@ app.use((req, res, next) => {
 });
 
 // 2. CORS
-app.use(cors());
+const allowedOrigins = [
+  'https://fuza.onrender.com',
+  'https://roleta3-1.onrender.com',
+  'http://localhost:5173', // se estiver testando localmente
+  'http://localhost:3000',
+  'https://ferramenta.smartanalise.com.br',
+  'https://free.smartanalise.com.br',
+  'https://sortenabet.smartanalise.com.br'
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Permitir sem header Origin (ex: requisições do backend interno)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.warn(`🚫 CORS bloqueado para origem: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-hubla-token']
+}));
+
 
 // 3. ❌ NÃO usar express.json() globalmente!
 // Vamos usar apenas em rotas específicas que precisam
@@ -428,14 +463,21 @@ async function fetchAndSaveFromSource(url, sourceName) {
 }
 
 async function fetchAllData() {
-    await Promise.all([
-        fetchAndSaveFromSource(API_URLS.immersive, 'immersive'),
-        fetchAndSaveFromSource(API_URLS.brasileira, 'brasileira'),
-        fetchAndSaveFromSource(API_URLS.default, 'default'),
-        fetchAndSaveFromSource(API_URLS.speed, 'speed'),
-        fetchAndSaveFromSource(API_URLS.xxxtreme, 'xxxtreme'),
-        fetchAndSaveFromSource(API_URLS.vipauto, 'vipauto')
-    ]);
+    // Pega todas as chaves de API_URLS (ex: 'immersive', 'brasileira', etc.)
+    const sourcesToFetch = Object.keys(API_URLS);
+
+    // Cria um array de Promises, uma para cada fonte
+    const fetchPromises = sourcesToFetch.map(sourceName => {
+        const url = API_URLS[sourceName];
+        return fetchAndSaveFromSource(url, sourceName);
+    });
+
+    try {
+        // Executa todas as buscas em paralelo
+        await Promise.all(fetchPromises);
+    } catch (error) {
+        console.error("❌ Erro durante o fetchAllData:", error);
+    }
 }
 
 // Scraper endpoints (protegidos)
