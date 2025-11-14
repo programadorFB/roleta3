@@ -806,6 +806,9 @@ const App = () => {
   }, []);
 
   // Launch Game Handler
+// App.jsx (Substitua esta função inteira)
+
+  // Launch Game Handler
   const handleLaunchGame = async () => {
     // <-- 3. EXIBIR O DASHBOARD IMEDIATAMENTE AO CLICAR -->
     setIsDashboardVisible(true);
@@ -821,8 +824,7 @@ const App = () => {
     }
   
     try {
-      // --- CORREÇÃO 2 DE 3 ---
-      // Adicionado o prefixo ${API_URL}
+      // --- CORREÇÃO 2 DE 3 (Já estava correta) ---
       const response = await fetch(`${API_URL}/start-game/${gameId}`, { //
         method: 'GET',
         headers: {
@@ -837,6 +839,28 @@ const App = () => {
         try {
           const data = JSON.parse(rawResponseText);
           console.log('📦 Dados parseados:', data);
+
+          // --- 💡 NOVA CORREÇÃO (AQUELA QUE FALTAVA) 💡 ---
+          // Verifica se a API retornou 200 OK, mas com uma mensagem de erro interna
+          const apiErrorMessage = data?.original?.message || data?.message;
+          
+          if ((data?.original?.status === 'error' || data?.status === 'error') && apiErrorMessage) {
+            
+            console.error("❌ Erro interno da API (200 OK) detectado:", apiErrorMessage);
+
+            // Verifica a string específica que você mencionou
+            if (apiErrorMessage.includes('Failed to request Softswiss Url')) {
+              // Esta é a mensagem que você pediu:
+              setLaunchError('Problemas com a provedora Evolution. Tente novamente em instantes.');
+            } else {
+              // Mostra outra mensagem de erro da API, se houver
+              setLaunchError(`Erro da API: ${apiErrorMessage.substring(0, 100)}...`);
+            }
+            
+            // Sai da função. O 'finally' lá embaixo vai parar o loading.
+            return; 
+          }
+          // --- FIM DA NOVA CORREÇÃO ---
   
           let gameUrl = null;
           gameUrl = data?.launchOptions?.launch_options?.game_url;
@@ -844,8 +868,7 @@ const App = () => {
           if (!gameUrl) gameUrl = data?.game_url;
           if (!gameUrl) gameUrl = data?.url;
           
-          // --- CORREÇÃO ADICIONADA ---
-          // Verifica a chave 'gameURL' (com U maiúsculo) que a sua API está retornando
+          // --- CORREÇÃO ADICIONADA (Esta já estava no seu arquivo, mantive) ---
           if (!gameUrl) gameUrl = data?.gameURL; 
           // --- FIM DA CORREÇÃO ---
           
@@ -869,6 +892,7 @@ const App = () => {
             setLaunchError('');
           } else {
             console.warn("❌ game_url não encontrada na resposta. Estrutura completa:", data);
+            // Este log agora só vai aparecer se não for um erro conhecido (como o da Evolution)
             setLaunchError('URL do jogo não encontrada na resposta da API. Estrutura: ' + JSON.stringify(data).substring(0, 200));
           }
   
@@ -878,25 +902,23 @@ const App = () => {
           setLaunchError('Resposta da API não é um JSON válido: ' + rawResponseText.substring(0, 100));
         }
       } else {
-  // ✨ NOVO: Traduz erro automaticamente
-  const errorInfo = await processErrorResponse(response, 'game');
-  displayError(errorInfo, setLaunchError, { showIcon: true });
-  
-  if (process.env.NODE_ENV === 'development') {
-    console.error('Game Launch Error:', errorInfo.originalError);
-    }
-  }
-} catch (err) {
-  // ✨ NOVO: Trata erro de rede
-  const errorInfo = translateNetworkError(err);
-  displayError(errorInfo, setLaunchError, { showIcon: true });
-  console.error('Network Error:', err);
-}finally {
+        // ✨ NOVO: Traduz erro automaticamente (Já estava correto)
+        const errorInfo = await processErrorResponse(response, 'game');
+        displayError(errorInfo, setLaunchError, { showIcon: true });
+        
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Game Launch Error:', errorInfo.originalError);
+        }
+      }
+    } catch (err) {
+      // ✨ NOVO: Trata erro de rede (Já estava correto)
+      const errorInfo = translateNetworkError(err);
+      displayError(errorInfo, setLaunchError, { showIcon: true });
+      console.error('Network Error:', err);
+    } finally {
       setIsLaunching(false);
     }
-  };
-
-  // Radius Effect
+  };  // Radius Effect
   useEffect(() => {
     const calculateRadius = () => {
       if (greenBaseRef.current) {
