@@ -37,13 +37,13 @@ const ROULETTE_SOURCES = {
   speed: '💨 Speed Roulette',
   xxxtreme: '⚡ XXXtreme Lightning',
   vipauto: '🚘 Auto Roulette Vip',
-  vip: '💎 Roleta Vip',
-  lightning: '⚡ Lightning Roulette',
-  aovivo: '🔴 Roleta ao Vivo',
-  speedauto: '💨 Speed Auto Roulette',
-  viproulette: '💎 Vip Roulette',
-  relampago: '⚡ Roleta Relâmpago',
-  malta: '🇲🇹 Casino Malta Roulette'
+  // vip: '💎 Roleta Vip',
+  // lightning: '⚡ Lightning Roulette',
+  // aovivo: '🔴 Roleta ao Vivo',
+  // speedauto: '💨 Speed Auto Roulette',
+  // viproulette: '💎 Vip Roulette',
+  // relampago: '⚡ Roleta Relâmpago',
+  // malta: '🇲🇹 Casino Malta Roulette'
 };
 
 const ROULETTE_GAME_IDS = {
