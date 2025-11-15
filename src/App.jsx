@@ -949,10 +949,14 @@ const App = () => {
                   />
                 </div>
 
+
+                <div>
                 <DeepAnalysisPanel 
                   spinHistory={filteredSpinHistory} 
                   setIsPaywallOpen={setIsPaywallOpen}
                 />
+
+                </div>
               </>
             ) : (
               <div className="waiting-panel">
