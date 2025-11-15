@@ -762,7 +762,8 @@ const App = () => {
     visible: false,
     content: '',
     x: 0,
-    y: 0
+    y: 0,
+    isBelow: false
   });
 
   const greenBaseRef = useRef(null);
@@ -1128,20 +1129,27 @@ const App = () => {
       );
       
       const rect = e.currentTarget.getBoundingClientRect();
-      const x = rect.left + window.scrollX + (rect.width / 2);
-      let y = rect.top + window.scrollY - 10; // 10px acima
+      const x = rect.left + (rect.width / 2);
+      let y = rect.top - 10; // 10px acima (sem scrollY pois é position: fixed)
+      let isBelow = false;
       
+      // Se o tooltip for sair da tela pelo topo, mostra abaixo do elemento
+      if (y < 100) {
+        y = rect.bottom + 10;
+        isBelow = true;
+      }
       setMobileTooltip(prev => {
         // Se clicar no mesmo, fecha
         if (prev.visible && prev.content === tooltipTitle) {
-          return { visible: false, content: '', x: 0, y: 0 };
+          return { visible: false, content: '', x: 0, y: 0, isBelow: false };
         }
         // Se não, mostra o novo
         return {
           visible: true,
           content: tooltipTitle,
           x: x, 
-          y: y
+          y: y,
+          isBelow: isBelow
         };
       });
     } else {
@@ -1151,7 +1159,7 @@ const App = () => {
   };
 
   const closeMobileTooltip = () => {
-    setMobileTooltip({ visible: false, content: '', x: 0, y: 0 });
+    setMobileTooltip({ visible: false, content: '', x: 0, y: 0, isBelow: false });
   };
   // --- Fim da Lógica de Tooltip ---
 
@@ -1199,7 +1207,7 @@ const App = () => {
             position: 'fixed',
             top: mobileTooltip.y,
             left: mobileTooltip.x,
-            transform: 'translate(-50%, -100%)', // Centraliza e posiciona acima
+            transform: mobileTooltip.isBelow ? 'translate(-50%, 0)' : 'translate(-50%, -100%)', // Centraliza e posiciona acima ou abaixo
             zIndex: 2000,
             opacity: 1,
             background: '#111827',
