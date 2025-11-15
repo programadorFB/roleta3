@@ -495,14 +495,14 @@ const GlobalStyles = () => (
 // --- 2. CORREÇÃO: COMPONENTE LOGIN ATUALIZADO ---
 // Refatoramos o handleSubmit para usar o errorHandler.js
 const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => {
-  const [formData, setFormData] = useState({ email: '', password: '', brand: 'betou' });
+  const [formData, setFormData] = useState({ email: '', password: '', brand: 'sortenabet' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [devMode, setDevMode] = useState(false);
   const brands = [
-    { value: 'betou', label: 'Betou' },
+    // { value: 'betou', label: 'Betou' },
     // { value: 'betfusion', label: 'BetFusion' },
-    // { value: 'sortenabet', label: 'Sorte na Bet' }
+    { value: 'sortenabet', label: 'Sorte na Bet' }
   ];
   const handleChange = (e) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -603,9 +603,9 @@ const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => {
             <h2 style={{ fontSize: '2rem', fontWeight: 'bold', color: 'white', marginBottom: '0.5rem' }}>
               Bem-vindo
             </h2>
-            <p style={{ color: '#9ca3af' }}>Este aplicativo é integrado com a casa BETOU. </p>
+            <p style={{ color: '#9ca3af' }}>Este aplicativo é integrado com a casa SORTE NA BET. </p>
             <br/>
-            <p style={{ color: '#9ca3af',marginBottom:"-25px" }}>Faça login com sua conta BETOU para acessar o aplicativo.</p>
+            <p style={{ color: '#9ca3af',marginBottom:"-25px" }}>Faça login com sua conta SORTE NA BET para acessar o aplicativo.</p>
           </div>
           {error && (
             <div style={{
@@ -629,7 +629,7 @@ const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => {
             <div>
 
               <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#d1d5db', marginBottom: '0.5rem' }}>
-                E-mail Betou
+                E-mail Sorte na bet
               </label>
               <div style={{ position: 'relative' }}>
                 <Mail size={20} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: '#9ca3af' }} />
@@ -640,7 +640,7 @@ const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => {
             </div>
             <div>
               <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#d1d5db', marginBottom: '0.5rem' }}>
-                Senha Betou
+                Senha Sorte na bet
               </label>
               <div style={{ position: 'relative' }}>
                 <Lock size={20} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: '#9ca3af' }} />
@@ -657,7 +657,7 @@ const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => {
 
             </div> */}
           <p style={{ color: "white" }}>
-              Ainda não tem cadastro na Betou?{" "}
+              Ainda não tem cadastro na Sorte na bet?{" "}
               <a 
                 href="https://go.aff.sortenabet.bet.br/2lqvuynt?utm_medium=app"
                 target="_blank"
@@ -1214,7 +1214,7 @@ const App = () => {
           {/* --- ALTERAÇÃO AQUI --- */}
           {/* O href agora é dinâmico e inclui o jwtToken */}
           <a 
-            href={`https://betou.bet.br/`}
+            href={`https://go.aff.sortenabet.bet.br/`}
             target="_blank" 
             rel="noopener noreferrer"
             className="nav-btn"
