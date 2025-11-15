@@ -40,21 +40,43 @@ const rouletteNumbers = [
 ];
 
 const ROULETTE_SOURCES = {
-  immersive: '🌟 Roleta Immersive',
+  immersive: '🌟 Immersive Roulette',
   brasileira: '🇧🇷 Roleta Brasileira',
   speed: '💨 Speed Roulette',
-  xxxtreme: '⚡ Xxxtreme Lightning',
-  vipauto: '🚘 Vip Auto Roulette'
+  xxxtreme: '⚡ XXXtreme Lightning',
+  vipauto: '🚘 Auto Roulette Vip',
+
+  vip: '💎 Roleta Vip',
+  lightning: '⚡ Lightning Roulette',
+  aovivo: '🔴 Roleta ao Vivo',
+  speedauto: '💨 Speed Auto Roulette',
+  viproulette: '💎 Vip Roulette', // (Diferente de 'Roleta Vip')
+  relampago: '⚡ Roleta Relâmpago',
+  malta: '🇲🇹 Casino Malta Roulette'
 };
 
 const ROULETTE_GAME_IDS = {
+  // --- IDs de Jogo para os 16 itens (do JSON) ---
+  auto: 120,
+  vipauto: 31,
+  bacbo: 54,
+  malta: 80,
+  footballstudio: 53,
   immersive: 55,
+  lightning: 33,
+  reddoor: 35,
+  aovivo: 34,
+  brasileira_playtech: 102,
   brasileira: 101,
+  relampago: 81,
+  speedauto: 82,
   speed: 36,
-  xxxtreme: 83,
-  vipauto: 31
+  viproulette: 32,
+  xxxtreme: 83
 };
 const filterOptions = [
+  
+  { value: 50, label: 'Últimas 50 Rodadas' },
   { value: 100, label: 'Últimas 100 Rodadas' },
   { value: 300, label: 'Últimas 300 Rodadas' },
   { value: 500, label: 'Últimas 500 Rodadas' },
