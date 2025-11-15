@@ -1222,7 +1222,7 @@ const App = () => {
             style={{ textDecoration: 'none' }}
           >
             <ExternalLink size={18} />
-            Site Betou
+            Acesse a Plataforma
           </a>
           {/* --- FIM DA ALTERAÇÃO --- */}
 
