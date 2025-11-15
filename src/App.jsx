@@ -2,7 +2,7 @@
 import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { 
     X, BarChart3, Clock, Hash, Percent, Layers, CheckSquare, Settings, 
-    LogOut, Lock, Mail, AlertCircle, PlayCircle, Filter 
+    LogOut, Lock, Mail, AlertCircle, PlayCircle, Filter, ExternalLink
 } from 'lucide-react';
 import PaywallModal from './components/PaywallModal.jsx'; 
 import './components/PaywallModal.css';
@@ -711,7 +711,7 @@ const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
-  const [jwtToken, setJwtToken] = useState(null);
+  const [jwtToken, setJwtToken] = useState(null); // <- JÁ TEMOS O TOKEN AQUI
   const [isPaywallOpen, setIsPaywallOpen] = useState(false);
   const [checkoutUrl, setCheckoutUrl] = useState('');
   // App States
@@ -751,7 +751,7 @@ const App = () => {
     const brand = localStorage.getItem('userBrand');
     if (token) {
       setIsAuthenticated(true);
-      setJwtToken(token);
+      setJwtToken(token); // <- TOKEN É CARREGADO AQUI
       setUserInfo({ email, brand });
     }
     setCheckingAuth(false);
@@ -760,7 +760,7 @@ const App = () => {
   // Login Handler
   const handleLoginSuccess = (data) => {
     setIsAuthenticated(true);
-    setJwtToken(data.jwt);
+    setJwtToken(data.jwt); // <- TOKEN É DEFINIDO AQUI
     setUserInfo({
       email: localStorage.getItem('userEmail'),
       brand: localStorage.getItem('userBrand'),
@@ -1210,6 +1210,22 @@ const App = () => {
               </span>
             </div>
           )} */}
+
+          {/* --- ALTERAÇÃO AQUI --- */}
+          {/* O href agora é dinâmico e inclui o jwtToken */}
+          <a 
+            href={`https://betou.bet.br/`}
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="nav-btn"
+            title="Abrir o site Betou.bet.br em uma nova aba (Tentativa de SSO)"
+            style={{ textDecoration: 'none' }}
+          >
+            <ExternalLink size={18} />
+            Acesse a Plataforma
+          </a>
+          {/* --- FIM DA ALTERAÇÃO --- */}
+
           <button 
             onClick={handleLogout}
             className="logout-btn"
