@@ -443,7 +443,23 @@
     
     /* --- FIM: CSS DE TABELA RESPONSIVA --- */
 }
+@media (max-width: 480px) {
+.strategy-card {
+    width: 350px;
+}
+.analysis-content {
+    margin-left: -15px;
+}
 
+}
+@media (max-width: 360px) {
+.strategy-card {
+    width: 350px;
+}
+.analysis-content {
+    margin-left: -15px;
+}
+}
 /* Estados Hover para Interatividade */
 .stat-row:hover {
     background: rgba(255, 255, 255, 0.03);
