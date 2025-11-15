@@ -251,9 +251,9 @@
 
 .nav-btn {
   padding: 0.625rem 1rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: #a161077e;
   color: #d1d5db;
-  border: 1px solid #4b5563;
+  border: 1px solid #A16207;
   border-radius: 0.5rem;
   cursor: pointer;
   font-weight: 600;
@@ -263,13 +263,26 @@
   gap: 0.5rem;
   text-decoration: none;
   transition: background-color 0.2s ease-out, border-color 0.2s ease-out;
+  position: relative;
+  animation: yellowPulse 2s ease-in-out infinite;
 }
 
 .nav-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: #6b7280;
+  background: #A16207;
+  border-color: #A16207;
+  animation: none; /* Para o pulso no hover */
 }
 
+@keyframes yellowPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.7);
+    border-color: #4b5563;
+  }
+  50% {
+    box-shadow: 0 0 20px 8px rgba(234, 179, 8, 0.3);
+    border-color: #ca8a04;
+  }
+}
 .logout-btn {
   padding: 0.625rem 1rem;
   background: rgba(239, 68, 68, 0.1);

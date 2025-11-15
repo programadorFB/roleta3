@@ -13,6 +13,7 @@ import ResultsGrid from './components/ResultGrid.jsx';
 import './components/NotificationsCenter.css';
 import './App.modules.css';
 import './index.css';
+import W600 from "./assets/w=600.svg";
 
 import { 
   processErrorResponse, 
@@ -390,6 +391,9 @@ const App = () => {
   const [numberPullStats, setNumberPullStats] = useState(() => new Map());
   const [numberPreviousStats, setNumberPreviousStats] = useState(() => new Map());
 
+  // Inactivity timeout ref
+  const inactivityTimeoutRef = useRef(null);
+
   // Check Auth
   useEffect(() => {
     const token = localStorage.getItem('authToken');
@@ -430,6 +434,69 @@ const App = () => {
     registerLogoutCallback(handleLogout);
     return () => clearLogoutCallback();
   }, [handleLogout]);
+
+  // Monitor inatividade do iframe - logout após 15 minutos com aba em foco
+  useEffect(() => {
+    if (!gameUrl || !isAuthenticated) {
+      if (inactivityTimeoutRef.current) {
+        clearTimeout(inactivityTimeoutRef.current);
+        inactivityTimeoutRef.current = null;
+      }
+      return;
+    }
+
+    // AUMENTADO: 15 minutos em ms
+    const INACTIVITY_LIMIT = 5 * 60 * 1000; 
+
+    const resetInactivityTimer = () => {
+      if (inactivityTimeoutRef.current) {
+        clearTimeout(inactivityTimeoutRef.current);
+      }
+      
+      inactivityTimeoutRef.current = setTimeout(() => {
+        console.log('Usuário inativo por 15 minutos (com aba em foco) - executando logout');
+        handleLogout();
+        // RECOMENDAÇÃO: Substituir o alert() por um modal ou notificação "toast"
+        alert('Sessão encerrada por inatividade. Faça login novamente.');
+      }, INACTIVITY_LIMIT);
+    };
+
+    // --- LÓGICA CORRIGIDA ---
+    // PAUSA o timer se o usuário sair da aba
+    const handleWindowBlur = () => {
+      if (inactivityTimeoutRef.current) {
+        clearTimeout(inactivityTimeoutRef.current);
+      }
+    };
+    
+    // REINICIA o timer quando o usuário volta para a aba
+    const handleWindowFocus = () => resetInactivityTimer();
+    
+    // REINICIA o timer em qualquer atividade
+    const handlePageActivity = () => resetInactivityTimer();
+    // --- FIM DA LÓGICA CORRIGIDA ---
+
+    resetInactivityTimer(); // Inicia o timer na primeira vez
+
+    window.addEventListener('blur', handleWindowBlur);
+    window.addEventListener('focus', handleWindowFocus);
+    document.addEventListener('mousemove', handlePageActivity, { passive: true });
+    document.addEventListener('mousedown', handlePageActivity, { passive: true });
+    document.addEventListener('keydown', handlePageActivity, { passive: true });
+    document.addEventListener('touchstart', handlePageActivity, { passive: true });
+
+    return () => {
+      if (inactivityTimeoutRef.current) {
+        clearTimeout(inactivityTimeoutRef.current);
+      }
+      window.removeEventListener('blur', handleWindowBlur);
+      window.removeEventListener('focus', handleWindowFocus);
+      document.removeEventListener('mousemove', handlePageActivity);
+      document.removeEventListener('mousedown', handlePageActivity);
+      document.removeEventListener('keydown', handlePageActivity);
+      document.removeEventListener('touchstart', handlePageActivity);
+    };
+  }, [gameUrl, isAuthenticated, handleLogout]);
 
   // Calcular pull stats em idle callback
   useEffect(() => {
@@ -557,6 +624,17 @@ const App = () => {
       setIsLaunching(false);
     }
   }, [selectedRoulette, jwtToken]);
+
+  // === CÓDIGO MOVIDO PARA CÁ (LOCAL CORRETO) ===
+  // Auto-launch game on login
+  useEffect(() => {
+    // Se está autenticado, E o jwtToken está pronto, E o jogo ainda não foi iniciado, E não estamos já iniciando um...
+    if (isAuthenticated && jwtToken && !gameUrl && !isLaunching) { 
+      console.log('Autenticado, iniciando jogo automaticamente...');
+      handleLaunchGame();
+    }
+  }, [isAuthenticated, jwtToken, gameUrl, isLaunching, handleLaunchGame]);
+  // === FIM DO CÓDIGO MOVIDO ===
 
   // Fetch History
   const fetchHistory = useCallback(async () => {
@@ -790,9 +868,8 @@ const App = () => {
             target="_blank" 
             rel="noopener noreferrer"
             className="nav-btn"
-          >
-            <ExternalLink size={18} />
-            <span className="nav-btn-text">Acesse a Plataforma</span>
+          >ENTRE NA PLATAFORMA<img src={W600} alt="Logo" style={{ height: "15px" }} />
+            <span className="nav-btn-text"></span>
           </a>
           <button onClick={handleLogout} className="logout-btn">
             <LogOut size={18} />
@@ -821,6 +898,7 @@ const App = () => {
                     onChange={(e) => {
                       setSelectedRoulette(e.target.value);
                       setLaunchError('');
+                      setGameUrl(''); // Adicionado: Força o auto-launch a rodar de novo se mudar a roleta
                     }}
                   >
                     {Object.keys(ROULETTE_SOURCES).map(key => (
@@ -858,7 +936,8 @@ const App = () => {
                 ) : (
                   <>
                     <PlayCircle size={20} />
-                    Iniciar {ROULETTE_SOURCES[selectedRoulette]}
+                    {/* Alterado: Texto do botão agora reflete o auto-launch */}
+                    {gameUrl ? `Reiniciar ${ROULETTE_SOURCES[selectedRoulette]}` : `Iniciar ${ROULETTE_SOURCES[selectedRoulette]}`}
                   </>
                 )}
               </button>
