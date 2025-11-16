@@ -98,7 +98,7 @@ const formatPullTooltip = (number, pullStats, previousStats) => {
 
 // === COMPONENTE LOGIN ===
 const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => {
-  const [formData, setFormData] = useState({ email: '', password: '', brand: 'betou' });
+  const [formData, setFormData] = useState({ email: '', password: '', brand: 'sortenabet' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
