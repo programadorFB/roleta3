@@ -98,7 +98,7 @@ const formatPullTooltip = (number, pullStats, previousStats) => {
 
 // === COMPONENTE LOGIN ===
 const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => {
-  const [formData, setFormData] = useState({ email: '', password: '', brand: 'betou' });
+  const [formData, setFormData] = useState({ email: '', password: '', brand: 'sortenabet' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -864,7 +864,7 @@ const App = () => {
         <div className="navbar-left"></div>
         <div className="navbar-right">
           <a 
-            href="https://betou.bet.br/"
+            href="https://sortenabet.bet.br/"
             target="_blank" 
             rel="noopener noreferrer"
             className="nav-btn"
