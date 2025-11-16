@@ -1052,7 +1052,10 @@ const App = () => {
       {/* Modals */}
       <PaywallModal
         isOpen={isPaywallOpen}
-        onClose={() => setIsPaywallOpen(false)}
+        onClose={() => {
+          setIsPaywallOpen(false);
+          handleLogout(); // <-- LINHA ADICIONADA: Desloga o usuário ao fechar o Paywall
+        }}
         userId={userInfo?.email} 
         checkoutUrl={checkoutUrl}
       />
