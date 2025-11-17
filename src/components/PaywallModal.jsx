@@ -58,7 +58,7 @@ const PaywallModal = ({ isOpen, onClose, userId, checkoutUrl }) => {
   };
 
   const handleFreeRedirect = () => {
-    window.location.href = 'https://free.smartanalise.com.br';
+    window.location.href = 'https://sortefree.smartanalise.com.br';
   };
 
   if (!isOpen) return null;
