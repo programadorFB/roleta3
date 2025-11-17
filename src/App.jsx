@@ -67,7 +67,7 @@ const ROULETTE_GAME_IDS = {
 };
 
 const filterOptions = [
-  { value: 50, label: 'Últimas 50 Rodadas' },
+  // { value: 50, label: 'Últimas 50 Rodadas' },
   { value: 100, label: 'Últimas 100 Rodadas' },
   { value: 300, label: 'Últimas 300 Rodadas' },
   { value: 500, label: 'Últimas 500 Rodadas' },
