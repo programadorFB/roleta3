@@ -183,7 +183,7 @@ const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => {
             </div>
 
             <div className="form-group">
-              <label>Senha SORTE NA BET</label>
+              <label>Senha Sorte na bet</label>
               <div className="input-wrapper">
                 <Lock size={20} className="input-icon" />
                 <input 
@@ -200,7 +200,7 @@ const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => {
             <p className="register-link">
               Ainda não tem cadastro na Sorte na Bet?{" "}
               <a 
-                href="https://go.aff.sortenabet.bet.br/2lqvuynt?utm_medium=app"
+                href="go.aff.sortenabet.bet.br/2lqvuynt?utm_medium=app"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -892,7 +892,7 @@ const App = () => {
                   <h4 className="selector-label">
                     <Layers size={15} /> Roletas
                   </h4>
-               <select 
+                   <select 
                     className="roulette-selector" 
                     value={selectedRoulette}
                     onChange={(e) => {

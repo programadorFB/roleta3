@@ -328,14 +328,14 @@ const sleepers = Object.entries(lastSeenIndex)
                     Setores
                 </button>
 
-                {/* Você também pode querer um botão para a aba 'visual' */}
+                {/* Você também pode querer um botão para a aba 'visual'
                 <button
                     onClick={() => setActiveTab('visual')}
                     style={getTabStyle('visual')}
                 >
                     <Activity size={18} />
                     Status
-                </button>
+                </button> */}
                 
             </div>
 
