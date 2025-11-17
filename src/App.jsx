@@ -1257,11 +1257,25 @@ const App = () => {
                   }}>
                     <Layers size={20} /> Roletas
                   </h4>
-                  <select className="roulette-selector" value={selectedRoulette}
+                          <select 
+                    className="roulette-selector" 
+                    value={selectedRoulette}
                     onChange={(e) => {
+                      // DADOS ATUAIS (COM O BUG)
+                      // setSelectedRoulette(e.target.value);
+                      // setLaunchError('');
+                      // setGameUrl(''); 
+                      
+                      // --- CORREÇÃO ---
+                      // Limpe o histórico e o resultado selecionado ao trocar
+                      setSpinHistory([]);
+                      setSelectedResult(null); 
+                      // O resto do seu código
                       setSelectedRoulette(e.target.value);
                       setLaunchError('');
-                    }}>
+                      setGameUrl(''); 
+                    }}
+                  >
                     {Object.keys(ROULETTE_SOURCES).map(key => (
                       <option key={key} value={key}>{ROULETTE_SOURCES[key]}</option>
                     ))}
