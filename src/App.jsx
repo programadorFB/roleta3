@@ -892,13 +892,23 @@ const App = () => {
                   <h4 className="selector-label">
                     <Layers size={15} /> Roletas
                   </h4>
-                  <select 
+               <select 
                     className="roulette-selector" 
                     value={selectedRoulette}
                     onChange={(e) => {
+                      // DADOS ATUAIS (COM O BUG)
+                      // setSelectedRoulette(e.target.value);
+                      // setLaunchError('');
+                      // setGameUrl(''); 
+                      
+                      // --- CORREÇÃO ---
+                      // Limpe o histórico e o resultado selecionado ao trocar
+                      setSpinHistory([]);
+                      setSelectedResult(null); 
+                      // O resto do seu código
                       setSelectedRoulette(e.target.value);
                       setLaunchError('');
-                      setGameUrl(''); // Adicionado: Força o auto-launch a rodar de novo se mudar a roleta
+                      setGameUrl(''); 
                     }}
                   >
                     {Object.keys(ROULETTE_SOURCES).map(key => (

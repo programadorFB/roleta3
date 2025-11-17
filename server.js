@@ -1,4 +1,11 @@
-// server.js - CORRIGIDO - Com integração Hubla funcionando
+// [MONITORAMENTO - SENTRY] 1. NO TOPO DE TUDO
+import * as Sentry from "@sentry/node"; 
+// Correção: Importa os handlers e integrações corretos da v8
+import { 
+  httpIntegration, 
+  expressIntegration, 
+} from "@sentry/node";
+// server.js - 🚀 MIGRADO PARA POSTGRESQL 🚀
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -7,8 +14,11 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 
+// [CAMINHO CORRIGIDO] Caminhos de importação na raiz
+import { loadAllExistingSignalIds, saveNewSignals, getFullHistory } from './src/utils/dbService.js';
+import { SOURCES } from './src/utils/constants.js'; 
+
 // Importa serviços
-import { loadAllExistingSignalIds, appendToCsv, getFullHistory, SOURCES } from './src/utils/csvService.js';
 import { testConnection } from './db.js';
 import {
     hasActiveAccess,
@@ -28,14 +38,35 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
 
+// [MONITORAMENTO - SENTRY] 2. INICIALIZAÇÃO
+// (Logo após a definição do 'app')
+Sentry.init({
+    dsn: process.env.SENTRY_DSN, // Puxa do .env
+    integrations: [
+            // Correção: Usa os nomes importados como funções
+            httpIntegration(),
+            expressIntegration({ app }), // Passa o 'app'
+        ],
+    tracesSampleRate: 1.0, // Amostragem de performance (100%)
+});
+
 // --- CONSTANTES ---
 const API_URLS = {
-    immersive: 'https://apptemporario-production.up.railway.app/api/0194b479-654d-70bd-ac50-9c5a9b4d14c5',
-    brasileira: 'https://apptemporario-production.up.railway.app/api/0194b473-2ab3-778f-89ee-236e803f3c8e',
-    default: 'https://apptemporario-production.up.railway.app/api/0194b473-4604-7458-bb18-e3fc562980c2',
-    speed: 'https://apptemporario-production.up.railway.app/api/0194b473-c347-752f-9eaf-783721339479',
-    xxxtreme: 'https://apptemporario-production.up.railway.app/api/0194b478-5ba0-7110-8179-d287b2301e2e',
-    vipauto: 'https://apptemporario-production.up.railway.app/api/0194b473-9044-772b-a6fc-38236eb08b42'
+    // --- Lista Filtrada ---
+    immersive: 'https://apptemporario-production.up.railway.app/api/0194b479-654d-70bd-ac50-9c5a9b4d14c5', // Immersive Roulette
+    brasileira: 'https://apptemporario-production.up.railway.app/api/0194b473-2ab3-778f-89ee-236e803f3c8e', // Roleta Brasileira
+    speed: 'https://apptemporario-production.up.railway.app/api/0194b473-c347-752f-9eaf-783721339479', // Speed Roulette
+    xxxtreme: 'https://apptemporario-production.up.railway.app/api/0194b478-5ba0-7110-8179-d287b2301e2e', // XXXtreme Lightning Roulette
+    vipauto: 'https://apptemporario-production.up.railway.app/api/0194b473-9044-772b-a6fc-38236eb08b42', // Auto Roulette Vip
+    auto: 'https://apptemporario-production.up.railway.app/api/0194b471-1645-749e-9214-be0342035f6f', // Auto Roulette
+    
+    vip: 'https://apptemporario-production.up.railway.app/api/0194b472-6b93-74be-9260-7e407f5f1103', // Roleta Vip
+    lightning: 'https://apptemporario-production.up.railway.app/api/0194b472-7d68-75ea-b249-1422258f4d4c', // Lightning Roulette
+    aovivo: 'https://apptemporario-production.up.railway.app/api/0194b473-1738-70dd-84a9-f1ddd4f00678', // Roleta ao Vivo
+    speedauto: 'https://apptemporario-production.up.railway.app/api/0194b473-3139-770c-841f-d026ce7ed01f', // Speed Auto Roulette
+    viproulette: 'https://apptemporario-production.up.railway.app/api/0194b474-bb9a-7451-b430-c451b14de1de', // Vip Roulette
+    relampago: 'https://apptemporario-production.up.railway.app/api/0194b474-d82f-76e0-9242-70f601984069', // Roleta Relâmpago
+    malta: 'https://apptemporario-production.up.railway.app/api/0194b476-6091-730c-b971-7e66d9d8c44a' // Casino Malta Roulette
 };
 const FETCH_INTERVAL_MS = 5000;
 const DEFAULT_AUTH_PROXY_TARGET = process.env.AUTH_PROXY_TARGET || 'https://api.appbackend.tech';
@@ -43,7 +74,6 @@ const HUBLA_WEBHOOK_TOKEN = process.env.HUBLA_WEBHOOK_TOKEN;
 const HUBLA_CHECKOUT_URL = process.env.HUBLA_CHECKOUT_URL;
 
 // --- MIDDLEWARE (ORDEM CRÍTICA) ---
-
 // 1. Log geral
 app.use((req, res, next) => {
     req._startTime = Date.now();
@@ -60,13 +90,36 @@ app.use((req, res, next) => {
 });
 
 // 2. CORS
-app.use(cors());
+const allowedOrigins = [
+  'https://fuza.onrender.com',
+  'https://roleta3-1.onrender.com',
+  'http://localhost:5173', // se estiver testando localmente
+  'http://localhost:3000',
+  'https://ferramenta.smartanalise.com.br',
+  'https://ferramenta1.smartanalise.com.br',
+  'https://free.smartanalise.com.br',
+  'https://sortenabet.smartanalise.com.br'
+];
 
-// 3. ❌ NÃO usar express.json() globalmente!
-// Vamos usar apenas em rotas específicas que precisam
+app.use(cors({
+  origin: (origin, callback) => {
+    // Permitir sem header Origin (ex: requisições do backend interno)
+    if (!origin) return callback(null, true);
 
-// 4. PROXY DE LOGIN (SEM VERIFICAÇÃO HUBLA AQUI)
-// A verificação Hubla será feita APÓS o login bem-sucedido
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.warn(`🚫 CORS bloqueado para origem: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-hubla-token']
+}));
+
+
+// 4. PROXY DE LOGIN
 app.use('/login', createProxyMiddleware({
     target: DEFAULT_AUTH_PROXY_TARGET,
     changeOrigin: true,
@@ -95,7 +148,6 @@ app.use('/login', createProxyMiddleware({
         
         proxyRes.on('data', chunk => body.push(chunk));
         
-        // 🔥 SOLUÇÃO: Fazemos a verificação Hubla APÓS receber resposta do backend
         proxyRes.on('end', async () => { 
             const responseBody = Buffer.concat(body).toString('utf8');
             const backendStatusCode = proxyRes.statusCode;
@@ -104,7 +156,6 @@ app.use('/login', createProxyMiddleware({
             console.log(`[${timestamp}] 📥 RESPOSTA DO BACKEND DE LOGIN`);
             console.log(`[${timestamp}] Status: ${backendStatusCode}`);
             
-            // Se o backend falhou, repassa o erro direto
             if (backendStatusCode < 200 || backendStatusCode >= 300) {
                 console.warn(`[${timestamp}] ⚠️ Login falhou no backend. Repassando erro.`);
                 console.log(`${'='.repeat(80)}\n`);
@@ -116,23 +167,16 @@ app.use('/login', createProxyMiddleware({
                 return;
             }
 
-            // --- VERIFICAÇÃO HUBLA (apenas se login foi bem-sucedido) ---
             try {
-                // Precisamos parsear o body original da requisição
-                // Como não usamos express.json(), vamos fazer manualmente
                 let email = null;
                 
-                // Tenta extrair do Authorization header (se for Basic Auth)
                 if (req.headers.authorization?.startsWith('Basic ')) {
                     const base64 = req.headers.authorization.split(' ')[1];
                     const decoded = Buffer.from(base64, 'base64').toString('utf-8');
-                    email = decoded.split(':')[0]; // username é o email
+                    email = decoded.split(':')[0];
                 }
                 
-                // Se não encontrou, tenta parsear o body (caso seja JSON)
                 if (!email && req.headers['content-type']?.includes('application/json')) {
-                    // O body já foi consumido pelo proxy, mas salvamos chunks se necessário
-                    // Para simplificar, vamos pegar do responseBody se o backend retornar
                     try {
                         const responseData = JSON.parse(responseBody);
                         email = responseData.user?.email || responseData.email;
@@ -191,6 +235,7 @@ app.use('/login', createProxyMiddleware({
                 
             } catch (dbError) {
                 console.error(`[${timestamp}] ❌ Erro ao verificar assinatura:`, dbError);
+                Sentry.captureException(dbError); // Captura erro de DB
                 res.status(500).json({
                     error: true,
                     message: "Erro ao verificar assinatura",
@@ -207,6 +252,8 @@ app.use('/login', createProxyMiddleware({
         console.error(`[${timestamp}] Código: ${err.code}`);
         console.error(`[${timestamp}] Mensagem: ${err.message}`);
         console.error(`${'='.repeat(80)}\n`);
+        
+        Sentry.captureException(err); // Captura erro de proxy
         
         if (!res.headersSent) {
             res.status(500).json({
@@ -252,7 +299,15 @@ app.use('/start-game', createProxyMiddleware({
         });
     },
 
-    logLevel: 'warn'
+    logLevel: 'warn',
+
+    onError: (err, req, res) => {
+        console.error(`[${new Date().toISOString()}] ❌ ERRO NO PROXY DE GAME:`, err.message);
+        Sentry.captureException(err); // Captura erro de proxy
+        if (!res.headersSent) {
+            res.status(500).json({ error: true, message: 'Erro no proxy de game', code: err.code });
+        }
+    }
 }));
 
 // 6. Servir arquivos estáticos
@@ -284,6 +339,7 @@ app.post('/api/webhooks/hubla', express.json(), async (req, res) => {
         
     } catch (error) {
         console.error(`[${timestamp}] ❌ Erro:`, error);
+        Sentry.captureException(error); // Captura erro de webhook
         res.status(500).json({ error: error.message });
     }
 });
@@ -331,6 +387,7 @@ const requireActiveSubscription = async (req, res, next) => {
         next();
     } catch (error) {
         console.error('❌ [AUTH] Erro:', error);
+        Sentry.captureException(error); // Captura erro de autenticação
         res.status(500).json({ error: 'Erro ao verificar assinatura' });
     }
 };
@@ -370,6 +427,7 @@ app.get('/api/subscription/status', async (req, res) => {
         });
     } catch (error) {
         console.error('❌ Erro ao verificar status:', error);
+        Sentry.captureException(error); // Captura erro
         res.status(500).json({ error: 'Erro ao verificar status' });
     }
 });
@@ -380,6 +438,7 @@ app.get('/api/admin/subscriptions/stats', async (req, res) => {
         const stats = await getSubscriptionStats();
         res.json(stats);
     } catch (error) {
+        Sentry.captureException(error); // Captura erro
         res.status(500).json({ error: error.message });
     }
 });
@@ -389,6 +448,7 @@ app.get('/api/admin/subscriptions/active', async (req, res) => {
         const subscriptions = await getActiveSubscriptions();
         res.json(subscriptions);
     } catch (error) {
+        Sentry.captureException(error); // Captura erro
         res.status(500).json({ error: error.message });
     }
 });
@@ -399,11 +459,12 @@ app.get('/api/admin/webhooks/logs', async (req, res) => {
         const logs = await getWebhookLogs(limit);
         res.json(logs);
     } catch (error) {
+        Sentry.captureException(error); // Captura erro
         res.status(500).json({ error: error.message });
     }
 });
 
-// --- SCRAPER ---
+// --- SCRAPER (MIGRADO PARA DB) ---
 const normalizeData = (data) => {
     if (Array.isArray(data)) return data;
     if (data?.games) return data.games;
@@ -420,22 +481,27 @@ async function fetchAndSaveFromSource(url, sourceName) {
         const normalizedData = normalizeData(data);
         
         if (normalizedData.length > 0) {
-            await appendToCsv(normalizedData, sourceName);
+            await saveNewSignals(normalizedData, sourceName);
         }
     } catch (err) {
         console.error(`❌ [FETCH - ${sourceName}]:`, err.message);
+        Sentry.captureException(err, { tags: { source: sourceName } }); // Captura erro de fetch
     }
 }
 
 async function fetchAllData() {
-    await Promise.all([
-        fetchAndSaveFromSource(API_URLS.immersive, 'immersive'),
-        fetchAndSaveFromSource(API_URLS.brasileira, 'brasileira'),
-        fetchAndSaveFromSource(API_URLS.default, 'default'),
-        fetchAndSaveFromSource(API_URLS.speed, 'speed'),
-        fetchAndSaveFromSource(API_URLS.xxxtreme, 'xxxtreme'),
-        fetchAndSaveFromSource(API_URLS.vipauto, 'vipauto')
-    ]);
+    const sourcesToFetch = Object.keys(API_URLS);
+    const fetchPromises = sourcesToFetch.map(sourceName => {
+        const url = API_URLS[sourceName];
+        return fetchAndSaveFromSource(url, sourceName);
+    });
+
+    try {
+        await Promise.all(fetchPromises);
+    } catch (error) {
+        console.error("❌ Erro durante o fetchAllData:", error);
+        Sentry.captureException(error); // Captura erro
+    }
 }
 
 // Scraper endpoints (protegidos)
@@ -444,6 +510,7 @@ app.get('/api/fetch/all', requireActiveSubscription, async (req, res) => {
         await fetchAllData();
         res.json({ status: 'ok' });
     } catch (err) {
+        Sentry.captureException(err); // Captura erro
         res.status(500).json({ error: err.message });
     }
 });
@@ -459,6 +526,7 @@ app.get('/api/fetch/:source', requireActiveSubscription, async (req, res) => {
         await fetchAndSaveFromSource(url, req.params.source);
         res.json({ status: 'ok' });
     } catch (err) {
+        Sentry.captureException(err); // Captura erro
         res.status(500).json({ error: err.message });
     }
 });
@@ -476,19 +544,53 @@ app.get('/api/full-history', requireActiveSubscription, async (req, res) => {
         const history = await getFullHistory(sourceName);
         res.json(history);
     } catch (error) {
+        Sentry.captureException(error); // Captura erro
         res.status(500).json({ error: error.message });
     }
 });
 
-app.get('/health', (req, res) => {
-    res.json({ 
-        status: 'OK',
-        timestamp: new Date().toISOString(),
-        uptime: process.uptime(),
-        hubla: HUBLA_WEBHOOK_TOKEN ? '✅' : '⚠️'
-    });
+// [MONITORAMENTO - HEALTH] Rota /health aprimorada
+app.get('/health', async (req, res) => {
+    try {
+        await testConnection(); // Testa o DB
+        res.json({ 
+            status: 'OK',
+            timestamp: new Date().toISOString(),
+            uptime: process.uptime(),
+            hubla: HUBLA_WEBHOOK_TOKEN ? '✅' : '⚠️',
+            database: '✅'
+        });
+    } catch (dbError) {
+        console.error('❌ HEALTH CHECK FALHOU (DB):', dbError.message);
+        res.status(503).json({ // 503 Service Unavailable
+            status: 'ERROR',
+            message: 'Serviço indisponível (Banco de Dados inacessível)',
+            database: '❌'
+        });
+    }
 });
 
+
+// [MONITORAMENTO - SENTRY] Endpoints de Teste
+app.get('/api/test-sentry', (req, res) => {
+    console.log('🧪 Testando captura de erro no Sentry...');
+    try {
+        throw new Error('🧪 Teste de erro do Sentry - Tudo funcionando!');
+    } catch (error) {
+        Sentry.captureException(error);
+        res.json({ 
+            success: true, 
+            message: 'Erro de teste enviado ao Sentry! Verifique o dashboard.',
+            sentryConfigured: !!process.env.SENTRY_DSN
+        });
+    }
+});
+
+app.get('/api/test-sentry-crash', (req, res, next) => {
+    console.log('💥 Testando crash não tratado...');
+    // Este erro será capturado pelo setupExpressErrorHandler
+    throw new Error('💥 Teste de crash não tratado - Sentry deve capturar!');
+});
 // Fallback SPA
 app.get(/.*/, (req, res) => {
     if (req.url.startsWith('/api/')) {
@@ -496,6 +598,9 @@ app.get(/.*/, (req, res) => {
     }
     res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
+
+// [MONITORAMENTO - SENTRY] 4. Error Handler (deve ser após todas as rotas)
+Sentry.setupExpressErrorHandler(app);
 
 // --- INICIALIZAÇÃO ---
 const startServer = async () => {
@@ -516,6 +621,8 @@ const startServer = async () => {
             console.log(`📢 Webhook: /api/webhooks/hubla`);
             console.log(`📊 API Scraper: /api/* (protegida)`);
             console.log(`💳 Hubla: ${HUBLA_WEBHOOK_TOKEN ? '✅ Configurado' : '⚠️ Não configurado'}`);
+            // Log de status do Sentry
+            console.log(`📦 Sentry: ${process.env.SENTRY_DSN ? '✅ Configurado' : '⚠️ Não configurado'}`);
             console.log(`${'='.repeat(80)}\n`);
             
             fetchAllData();
@@ -523,8 +630,25 @@ const startServer = async () => {
         });
     } catch (err) {
         console.error("❌ ERRO CRÍTICO:", err);
+        // [MONITORAMENTO - SENTRY] Captura o erro de inicialização
+        await Sentry.captureException(err);
+        await Sentry.close(2000); // Espera o Sentry enviar
         process.exit(1);
     }
 };
 
 startServer();
+
+// [MONITORAMENTO - SENTRY] 5. Captura de erros não tratados
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
+  Sentry.captureException(reason);
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('❌ Uncaught Exception:', err);
+  Sentry.captureException(err);
+  Sentry.close(2000).then(() => {
+    process.exit(1); // Encerra após enviar o erro
+  });
+});
