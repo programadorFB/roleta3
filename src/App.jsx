@@ -699,7 +699,7 @@ const App = () => {
   useEffect(() => {
     if (!isAuthenticated || !userInfo) return;
     fetchHistory();
-    const intervalId = setInterval(fetchHistory, 5000);
+    const intervalId = setInterval(fetchHistory, 1000);
     return () => clearInterval(intervalId);
   }, [fetchHistory, isAuthenticated, userInfo]);
 
