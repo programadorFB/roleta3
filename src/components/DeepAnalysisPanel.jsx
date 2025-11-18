@@ -12,8 +12,8 @@ import NeighborAnalysis from './NeighborAnalysis';
 import TerminalAnalysis from './TerminalAnalysis';
 import AdvancedPatternsAnalysis from './AdvancedPatternsAnalysis';
 import FrequencyTable from './FrequencyTable'; // <-- 1. IMPORTADO AQUI
-import GroupStrategiesAnalysis from './GroupStrategiesAnalysis'; // <-- NOVO: Análise de Grupos
-import CatalogacaoTable from './Catalogacaotable'; // <-- NOVO: Tabela de Catalogação
+// import GroupStrategiesAnalysis from './GroupStrategiesAnalysis'; // <-- NOVO: Análise de Grupos
+// import CatalogacaoTable from './Catalogacaotable'; // <-- NOVO: Tabela de Catalogação
 
 import { UpdateCountdown } from './VisualIndicators';
 

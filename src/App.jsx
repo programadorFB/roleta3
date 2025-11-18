@@ -9,6 +9,7 @@ import './components/PaywallModal.css';
 import MasterDashboard from './pages/MasterDashboard.jsx';
 import RacingTrack from './components/RacingTrack.jsx';
 import DeepAnalysisPanel from './components/DeepAnalysisPanel.jsx';
+import CercoAlertPanel from './components/CercoAlertPanel.jsx';
 import ResultsGrid from './components/ResultGrid.jsx';
 import './components/NotificationsCenter.css';
 import './App.modules.css';
@@ -81,16 +82,16 @@ const formatPullTooltip = (number, pullStats, previousStats) => {
 
   let pullString = "(Nenhum)";
   if (pullStatsMap && pullStatsMap.size > 0) {
-    const pulledNumbers = [...pullStatsMap.keys()].slice(0, 6);
+    const pulledNumbers = [...pullStatsMap.keys()].slice(0, 5);
     pullString = pulledNumbers.join(', ');
-    if (pullStatsMap.size > 6) pullString += ', ';
+    if (pullStatsMap.size > 5) pullString += ', ...';
   }
 
   let prevString = "(Nenhum)";
   if (prevStatsMap && prevStatsMap.size > 0) {
     const prevNumbers = [...prevStatsMap.keys()].slice(0, 5);
     prevString = prevNumbers.join(', ');
-    if (prevStatsMap.size > 6) prevString += ', ';
+    if (prevStatsMap.size > 5) prevString += ', ...';
   }
 
   return `Número: ${number}\nPuxou: ${pullString}\nVeio Antes: ${prevString}`;
@@ -98,7 +99,7 @@ const formatPullTooltip = (number, pullStats, previousStats) => {
 
 // === COMPONENTE LOGIN ===
 const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => {
-  const [formData, setFormData] = useState({ email: '', password: '', brand: 'sortenabet' });
+  const [formData, setFormData] = useState({ email: '', password: '', brand: 'betou' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -168,7 +169,7 @@ const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => {
           
           <form onSubmit={handleSubmit} className="login-form">
             <div className="form-group">
-              <label>E-mail SORTE NA BET</label>
+              <label>E-mail Sorte Na Bet</label>
               <div className="input-wrapper">
                 <Mail size={20} className="input-icon" />
                 <input 
@@ -183,7 +184,7 @@ const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => {
             </div>
 
             <div className="form-group">
-              <label>Senha Sorte na bet</label>
+              <label>Senha Sorte Na Bet</label>
               <div className="input-wrapper">
                 <Lock size={20} className="input-icon" />
                 <input 
@@ -198,9 +199,9 @@ const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => {
             </div>
             
             <p className="register-link">
-              Ainda não tem cadastro na Sorte na Bet?{" "}
+              Ainda não tem cadastro na Sorte Na Bet?{" "}
               <a 
-                href="go.aff.sortenabet.bet.br/2lqvuynt?utm_medium=app"
+                href="https://go.aff.sortenabet.bet.br/2lqvuynt?utm_medium=app"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -699,7 +700,7 @@ const App = () => {
   useEffect(() => {
     if (!isAuthenticated || !userInfo) return;
     fetchHistory();
-    const intervalId = setInterval(fetchHistory, 2000);
+    const intervalId = setInterval(fetchHistory, 1000);
     return () => clearInterval(intervalId);
   }, [fetchHistory, isAuthenticated, userInfo]);
 
@@ -892,7 +893,7 @@ const App = () => {
                   <h4 className="selector-label">
                     <Layers size={15} /> Roletas
                   </h4>
-                   <select 
+               <select 
                     className="roulette-selector" 
                     value={selectedRoulette}
                     onChange={(e) => {
@@ -1044,6 +1045,16 @@ const App = () => {
                 <DeepAnalysisPanel 
                   spinHistory={filteredSpinHistory} 
                   setIsPaywallOpen={setIsPaywallOpen}
+                />
+                <CercoAlertPanel 
+                  spinHistory={filteredSpinHistory} 
+                  options={{
+                    enablePreFormation: true,
+                    enableFrequencyAnalysis: true,
+                    enableCandidateTracking: true,
+                    lookbackWindow: 50,
+                    maxVisibleAlerts: 3
+                  }}
                 />
 
                 </div>
