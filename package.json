@@ -12,6 +12,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@sentry/node": "^10.25.0",
+    "centry": "^0.1.0",
     "cors": "^2.8.5",
     "csv-parser": "^3.2.0",
     "dotenv": "^17.2.3",
@@ -21,11 +23,12 @@
     "map": "^1.0.1",
     "node-fetch": "^3.3.2",
     "pg": "^8.16.3",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
     "react-is": "^19.2.0",
     "rechart": "^0.0.1",
     "recharts": "^3.3.0",
+    "sentry": "^0.1.2",
     "zap": "^2.1.1"
   },
   "devDependencies": {

@@ -9,6 +9,7 @@ import './components/PaywallModal.css';
 import MasterDashboard from './pages/MasterDashboard.jsx';
 import RacingTrack from './components/RacingTrack.jsx';
 import DeepAnalysisPanel from './components/DeepAnalysisPanel.jsx';
+import CercoAlertPanel from './components/CercoAlertPanel.jsx';
 import ResultsGrid from './components/ResultGrid.jsx';
 import './components/NotificationsCenter.css';
 import './App.modules.css';
@@ -1044,6 +1045,16 @@ const App = () => {
                 <DeepAnalysisPanel 
                   spinHistory={filteredSpinHistory} 
                   setIsPaywallOpen={setIsPaywallOpen}
+                />
+                <CercoAlertPanel 
+                  spinHistory={filteredSpinHistory} 
+                  options={{
+                    enablePreFormation: true,
+                    enableFrequencyAnalysis: true,
+                    enableCandidateTracking: true,
+                    lookbackWindow: 50,
+                    maxVisibleAlerts: 3
+                  }}
                 />
 
                 </div>

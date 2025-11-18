@@ -1,4 +1,4 @@
-// [MONITORAMENTO - SENTRY] 1. NO TOPO DE TUDO
+// / [MONITORAMENTO - SENTRY] 1. NO TOPO DE TUDO
 import * as Sentry from "@sentry/node"; 
 // Correção: Importa os handlers e integrações corretos da v8
 import { 
@@ -194,9 +194,12 @@ app.use('/login', createProxyMiddleware({
                     return;
                 }
 
-                console.log(`[${timestamp}] 🔍 Verificando assinatura Hubla para: ${email}`);
+                // --- CORREÇÃO: Normaliza o email vindo do backend antes de checar no banco ---
+                const cleanEmail = email.trim().toLowerCase();
+
+                console.log(`[${timestamp}] 🔍 Verificando assinatura Hubla para: ${cleanEmail} (Original: ${email})`);
                 
-                const subscription = await getSubscriptionByEmail(email);
+                const subscription = await getSubscriptionByEmail(cleanEmail);
                 let canLogin = false;
                 let subMessage = 'Assinatura não encontrada.';
 
@@ -205,11 +208,15 @@ app.use('/login', createProxyMiddleware({
                     
                     if (!activeStatuses.includes(subscription.status)) {
                         subMessage = `Assinatura inativa (Status: ${subscription.status})`;
+                        console.warn(`⚠️ [DEBUG LOGIN] Email: ${cleanEmail} | Status DB: ${subscription.status} | Esperado: ${activeStatuses.join(',')}`);
                     } else if (subscription.expires_at && new Date(subscription.expires_at) < new Date()) {
                         subMessage = 'Assinatura expirada.';
+                        console.warn(`⚠️ [DEBUG LOGIN] Email: ${cleanEmail} | Expirou: ${subscription.expires_at}`);
                     } else {
                         canLogin = true;
                     }
+                } else {
+                    console.warn(`⚠️ [DEBUG LOGIN] Email não encontrado no DB: '${cleanEmail}'`);
                 }
 
                 if (canLogin) {
@@ -356,7 +363,10 @@ const requireActiveSubscription = async (req, res, next) => {
             });
         }
         
-        const subscription = await getSubscriptionByEmail(userEmail);
+        // --- CORREÇÃO: Normaliza o email vindo da query ---
+        const cleanEmail = userEmail.trim().toLowerCase();
+        
+        const subscription = await getSubscriptionByEmail(cleanEmail);
         
         if (!subscription) {
             return res.status(403).json({
@@ -401,7 +411,10 @@ app.get('/api/subscription/status', async (req, res) => {
             return res.status(400).json({ error: 'userEmail obrigatório' });
         }
         
-        const subscription = await getSubscriptionByEmail(userEmail);
+        // --- CORREÇÃO: Normaliza aqui também ---
+        const cleanEmail = userEmail.trim().toLowerCase();
+        
+        const subscription = await getSubscriptionByEmail(cleanEmail);
         
         if (!subscription) {
             return res.json({
