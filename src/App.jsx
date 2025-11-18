@@ -674,13 +674,13 @@ const App = () => {
         const newItems = [];
         
         for (const item of data) {
-          if (item.signalId === latestId) break;
+          if (item.signalid === latestId) break;
           newItems.push({
             number: parseInt(item.signal, 10),
             color: getNumberColor(parseInt(item.signal, 10)),
             signal: item.signal,
             gameId: item.gameId,
-            signalId: item.signalId,
+            signalId: item.signalid,
             date: item.timestamp
           });
         }
