@@ -81,16 +81,16 @@ const formatPullTooltip = (number, pullStats, previousStats) => {
 
   let pullString = "(Nenhum)";
   if (pullStatsMap && pullStatsMap.size > 0) {
-    const pulledNumbers = [...pullStatsMap.keys()].slice(0, 5);
+    const pulledNumbers = [...pullStatsMap.keys()].slice(0, 6);
     pullString = pulledNumbers.join(', ');
-    if (pullStatsMap.size > 5) pullString += ', ...';
+    if (pullStatsMap.size > 6) pullString += ', ';
   }
 
   let prevString = "(Nenhum)";
   if (prevStatsMap && prevStatsMap.size > 0) {
     const prevNumbers = [...prevStatsMap.keys()].slice(0, 5);
     prevString = prevNumbers.join(', ');
-    if (prevStatsMap.size > 5) prevString += ', ...';
+    if (prevStatsMap.size > 6) prevString += ', ';
   }
 
   return `Número: ${number}\nPuxou: ${pullString}\nVeio Antes: ${prevString}`;
