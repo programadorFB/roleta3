@@ -13,9 +13,8 @@ import ResultsGrid from './components/ResultGrid.jsx';
 import './components/NotificationsCenter.css';
 import './App.modules.css';
 import './index.css';
-
 import W600 from "./assets/w=1200.avif";
-const isPremium = false;
+
 import { 
   processErrorResponse, 
   translateNetworkError, 
@@ -68,7 +67,7 @@ const ROULETTE_GAME_IDS = {
 };
 
 const filterOptions = [
-  { value: 50, label: 'Últimas 50 Rodadas' },
+  // { value: 50, label: 'Últimas 50 Rodadas' },
   { value: 100, label: 'Últimas 100 Rodadas' },
   { value: 300, label: 'Últimas 300 Rodadas' },
   { value: 500, label: 'Últimas 500 Rodadas' },
@@ -169,7 +168,7 @@ const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => {
           
           <form onSubmit={handleSubmit} className="login-form">
             <div className="form-group">
-              <label>E-mail Sorte na bet</label>
+              <label>E-mail SORTE NA BET</label>
               <div className="input-wrapper">
                 <Mail size={20} className="input-icon" />
                 <input 
@@ -184,7 +183,7 @@ const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => {
             </div>
 
             <div className="form-group">
-              <label>Senha Sorte na bet</label>
+              <label>Senha SORTE NA BET</label>
               <div className="input-wrapper">
                 <Lock size={20} className="input-icon" />
                 <input 
@@ -199,7 +198,7 @@ const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => {
             </div>
             
             <p className="register-link">
-              Ainda não tem cadastro na Sorte na Bet?{" "}
+              Ainda não tem cadastro na SORTE NA BET?{" "}
               <a 
                 href="https://go.aff.sortenabet.bet.br/2lqvuynt?utm_medium=app"
                 target="_blank"
@@ -361,7 +360,7 @@ const App = () => {
   const [jwtToken, setJwtToken] = useState(null);
   const [isPaywallOpen, setIsPaywallOpen] = useState(false);
   const [checkoutUrl, setCheckoutUrl] = useState('');
-  
+  const isPremium = false;
   // App States
   const [selectedRoulette, setSelectedRoulette] = useState(Object.keys(ROULETTE_SOURCES)[0]);
   const [spinHistory, setSpinHistory] = useState([]);
@@ -897,9 +896,19 @@ const App = () => {
                     className="roulette-selector" 
                     value={selectedRoulette}
                     onChange={(e) => {
+                      // DADOS ATUAIS (COM O BUG)
+                      // setSelectedRoulette(e.target.value);
+                      // setLaunchError('');
+                      // setGameUrl(''); 
+                      
+                      // --- CORREÇÃO ---
+                      // Limpe o histórico e o resultado selecionado ao trocar
+                      setSpinHistory([]);
+                      setSelectedResult(null); 
+                      // O resto do seu código
                       setSelectedRoulette(e.target.value);
                       setLaunchError('');
-                      setGameUrl(''); // Adicionado: Força o auto-launch a rodar de novo se mudar a roleta
+                      setGameUrl(''); 
                     }}
                   >
                     {Object.keys(ROULETTE_SOURCES).map(key => (
@@ -1023,10 +1032,12 @@ const App = () => {
                 <div className='latest-results'>
 
                   <ResultsGrid 
-                    latestNumbers={stats.latestNumbers}
-                    numberPullStats={numberPullStats}
-                    numberPreviousStats={numberPreviousStats}
-                    onResultClick={handleResultBoxClick}
+                  latestNumbers={stats.latestNumbers}
+                  numberPullStats={numberPullStats}
+                  numberPreviousStats={numberPreviousStats}
+                  onResultClick={handleResultBoxClick}
+                  isPremium={isPremium} // Variável que diz se o user é premium
+                  setIsPaywallOpen={setIsPaywallOpen} // Função que abre o modal
                     />
                 </div>
                     </div>
@@ -1051,17 +1062,12 @@ const App = () => {
       )}
 
       {/* Modals */}
-      <div className='latest-results'>
-
-  <ResultsGrid 
-  latestNumbers={stats.latestNumbers}
-  numberPullStats={numberPullStats}
-  numberPreviousStats={numberPreviousStats}
-  onResultClick={handleResultBoxClick}
-  isPremium={isPremium} // Variável que diz se o user é premium
-  setIsPaywallOpen={setIsPaywallOpen} // Função que abre o modal
-    />
-</div>
+      <PaywallModal
+        isOpen={isPaywallOpen}
+        onClose={() => setIsPaywallOpen(false)}
+        userId={userInfo?.email} 
+        checkoutUrl={checkoutUrl}
+      />
 
       <NumberStatsPopup 
         isOpen={isPopupOpen}

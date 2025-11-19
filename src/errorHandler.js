@@ -73,8 +73,8 @@ const ERROR_MESSAGES = {
 
   // Erros 5xx - Servidor
   500: {
-    title: 'Erro Interno do Servidor',
-    message: 'Algo deu errado no servidor. Nossa equipe já foi notificada. Tente novamente em alguns minutos.',
+    title: 'Senha e ou email incorretos',
+    message: 'Algo deu errado no login. Verifique se está no link correto.',
     icon: '🔧'
   },
   502: {
