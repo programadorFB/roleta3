@@ -9,7 +9,6 @@ import './components/PaywallModal.css';
 import MasterDashboard from './pages/MasterDashboard.jsx';
 import RacingTrack from './components/RacingTrack.jsx';
 import DeepAnalysisPanel from './components/DeepAnalysisPanel.jsx';
-import CercoAlertPanel from './components/CercoAlertPanel.jsx';
 import ResultsGrid from './components/ResultGrid.jsx';
 import './components/NotificationsCenter.css';
 import './App.modules.css';
@@ -446,7 +445,6 @@ const App = () => {
       return;
     }
 
-    // AUMENTADO: 15 minutos em ms
     const INACTIVITY_LIMIT = 90 * 60 * 1000; 
 
     const resetInactivityTimer = () => {
@@ -457,27 +455,20 @@ const App = () => {
       inactivityTimeoutRef.current = setTimeout(() => {
         console.log('Usuário inativo por 15 minutos (com aba em foco) - executando logout');
         handleLogout();
-        // RECOMENDAÇÃO: Substituir o alert() por um modal ou notificação "toast"
         alert('Sessão encerrada por inatividade. Faça login novamente.');
       }, INACTIVITY_LIMIT);
     };
 
-    // --- LÓGICA CORRIGIDA ---
-    // PAUSA o timer se o usuário sair da aba
     const handleWindowBlur = () => {
       if (inactivityTimeoutRef.current) {
         clearTimeout(inactivityTimeoutRef.current);
       }
     };
     
-    // REINICIA o timer quando o usuário volta para a aba
     const handleWindowFocus = () => resetInactivityTimer();
-    
-    // REINICIA o timer em qualquer atividade
     const handlePageActivity = () => resetInactivityTimer();
-    // --- FIM DA LÓGICA CORRIGIDA ---
 
-    resetInactivityTimer(); // Inicia o timer na primeira vez
+    resetInactivityTimer(); 
 
     window.addEventListener('blur', handleWindowBlur);
     window.addEventListener('focus', handleWindowFocus);
@@ -626,16 +617,13 @@ const App = () => {
     }
   }, [selectedRoulette, jwtToken]);
 
-  // === CÓDIGO MOVIDO PARA CÁ (LOCAL CORRETO) ===
   // Auto-launch game on login
   useEffect(() => {
-    // Se está autenticado, E o jwtToken está pronto, E o jogo ainda não foi iniciado, E não estamos já iniciando um...
     if (isAuthenticated && jwtToken && !gameUrl && !isLaunching) { 
       console.log('Autenticado, iniciando jogo automaticamente...');
       handleLaunchGame();
     }
   }, [isAuthenticated, jwtToken, gameUrl, isLaunching, handleLaunchGame]);
-  // === FIM DO CÓDIGO MOVIDO ===
 
   // Fetch History
   const fetchHistory = useCallback(async () => {
@@ -897,16 +885,8 @@ const App = () => {
                     className="roulette-selector" 
                     value={selectedRoulette}
                     onChange={(e) => {
-                      // DADOS ATUAIS (COM O BUG)
-                      // setSelectedRoulette(e.target.value);
-                      // setLaunchError('');
-                      // setGameUrl(''); 
-                      
-                      // --- CORREÇÃO ---
-                      // Limpe o histórico e o resultado selecionado ao trocar
                       setSpinHistory([]);
                       setSelectedResult(null); 
-                      // O resto do seu código
                       setSelectedRoulette(e.target.value);
                       setLaunchError('');
                       setGameUrl(''); 
@@ -947,7 +927,6 @@ const App = () => {
                 ) : (
                   <>
                     <PlayCircle size={20} />
-                    {/* Alterado: Texto do botão agora reflete o auto-launch */}
                     {gameUrl ? `Reiniciar ${ROULETTE_SOURCES[selectedRoulette]}` : `Iniciar ${ROULETTE_SOURCES[selectedRoulette]}`}
                   </>
                 )}
@@ -1042,13 +1021,11 @@ const App = () => {
                     </div>
 
                 <div>
+                {/* Cerco integrado como opção dentro do DeepAnalysisPanel */}
                 <DeepAnalysisPanel 
                   spinHistory={filteredSpinHistory} 
                   setIsPaywallOpen={setIsPaywallOpen}
-                />
-                <CercoAlertPanel 
-                  spinHistory={filteredSpinHistory} 
-                  options={{
+                  cercoOptions={{
                     enablePreFormation: true,
                     enableFrequencyAnalysis: true,
                     enableCandidateTracking: true,
@@ -1056,7 +1033,6 @@ const App = () => {
                     maxVisibleAlerts: 3
                   }}
                 />
-
                 </div>
               </>
             ) : (
@@ -1075,7 +1051,7 @@ const App = () => {
         isOpen={isPaywallOpen}
         onClose={() => {
           setIsPaywallOpen(false);
-          handleLogout(); // <-- LINHA ADICIONADA: Desloga o usuário ao fechar o Paywall
+          handleLogout(); 
         }}
         userId={userInfo?.email} 
         checkoutUrl={checkoutUrl}
