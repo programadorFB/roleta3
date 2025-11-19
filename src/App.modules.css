@@ -268,8 +268,8 @@
 }
 
 .nav-btn:hover {
-  background: #A16207;
-  border-color: #A16207;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #6b7280;
   animation: none; /* Para o pulso no hover */
 }
 

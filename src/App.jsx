@@ -38,13 +38,13 @@ const ROULETTE_SOURCES = {
   speed: '💨 Speed Roulette',
   xxxtreme: '⚡ XXXtreme Lightning',
   vipauto: '🚘 Auto Roulette Vip',
-  vip: '💎 Roleta Vip',
-  lightning: '⚡ Lightning Roulette',
-  aovivo: '🔴 Roleta ao Vivo',
-  speedauto: '💨 Speed Auto Roulette',
-  viproulette: '💎 Vip Roulette',
-  relampago: '⚡ Roleta Relâmpago',
-  malta: '🇲🇹 Casino Malta Roulette'
+  // vip: '💎 Roleta Vip',
+  // lightning: '⚡ Lightning Roulette',
+  // aovivo: '🔴 Roleta ao Vivo',
+  // speedauto: '💨 Speed Auto Roulette',
+  // viproulette: '💎 Vip Roulette',
+  // relampago: '⚡ Roleta Relâmpago',
+  // malta: '🇲🇹 Casino Malta Roulette'
 };
 
 const ROULETTE_GAME_IDS = {
@@ -200,7 +200,7 @@ const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => {
             <p className="register-link">
               Ainda não tem cadastro na Betou?{" "}
               <a 
-                href="https://go.aff.betou.bet.br/tgml0e19?utm_medium=appcmd"
+                href="https://go.aff.betou.bet.br/bhlfl7qf?utm_medium=apprgr"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -663,7 +663,7 @@ const App = () => {
             color: getNumberColor(parseInt(item.signal, 10)),
             signal: item.signal,
             gameId: item.gameId,
-            signalId: item.signalid,
+            signalId: item.signalId,
             date: item.timestamp
           }));
           setSelectedResult(converted[0] || null);
@@ -674,13 +674,13 @@ const App = () => {
         const newItems = [];
         
         for (const item of data) {
-          if (item.signalid === latestId) break;
+          if (item.signalId === latestId) break;
           newItems.push({
             number: parseInt(item.signal, 10),
             color: getNumberColor(parseInt(item.signal, 10)),
             signal: item.signal,
             gameId: item.gameId,
-            signalId: item.signalid,
+            signalId: item.signalId,
             date: item.timestamp
           });
         }
