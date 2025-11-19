@@ -13,8 +13,9 @@ import ResultsGrid from './components/ResultGrid.jsx';
 import './components/NotificationsCenter.css';
 import './App.modules.css';
 import './index.css';
-import W600 from "./assets/w=1200.avif";
 
+import W600 from "./assets/w=1200.avif";
+const isPremium = false;
 import { 
   processErrorResponse, 
   translateNetworkError, 
@@ -1050,12 +1051,17 @@ const App = () => {
       )}
 
       {/* Modals */}
-      <PaywallModal
-        isOpen={isPaywallOpen}
-        onClose={() => setIsPaywallOpen(false)}
-        userId={userInfo?.email} 
-        checkoutUrl={checkoutUrl}
-      />
+      <div className='latest-results'>
+
+  <ResultsGrid 
+  latestNumbers={stats.latestNumbers}
+  numberPullStats={numberPullStats}
+  numberPreviousStats={numberPreviousStats}
+  onResultClick={handleResultBoxClick}
+  isPremium={isPremium} // Variável que diz se o user é premium
+  setIsPaywallOpen={setIsPaywallOpen} // Função que abre o modal
+    />
+</div>
 
       <NumberStatsPopup 
         isOpen={isPopupOpen}
