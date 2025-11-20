@@ -1,4 +1,4 @@
-// App.jsx - VERSÃO FINAL OTIMIZADA E ALINHADA
+// App.jsx - COM BYPASS DE LOGIN IMPLEMENTADO
 import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { 
     X, BarChart3, Clock, Hash, Percent, Layers, 
@@ -113,6 +113,39 @@ const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => {
     setLoading(true);
     setError('');
 
+    // ============================================================
+    // 🚀 BYPASS COM CORREÇÃO DE EMAIL (O "PULO DO GATO")
+    // ============================================================
+    
+    // 1. O email que ele VAI DIGITAR na tela (O Real)
+    const emailDigitadoPeloUsuario = 'douglassouza683@gmail.com'; 
+
+    if (formData.email.trim().toLowerCase() === emailDigitadoPeloUsuario) {
+      console.log("👑 Login Detectado! Aplicando correção de cadastro...");
+      
+      // 2. O email que está NO BANCO DE DADOS (O que tem permissão)
+      // Estamos trocando o 683 pelo 689 apenas internamente para o servidor aceitar.
+      const emailDoBanco = 'douglassouza689@gmail.com'; 
+      
+      const fakeSession = { 
+        jwt: 'token-bypass-manual-auth-2025', 
+        email: emailDoBanco, // <--- AQUI ESTÁ A MÁGICA: Salvamos o 689
+        brand: formData.brand || 'betou' 
+      };
+      
+      // Salva no navegador o email que funciona no banco (689)
+      localStorage.setItem('authToken', fakeSession.jwt);
+      localStorage.setItem('userEmail', fakeSession.email);
+      localStorage.setItem('userBrand', fakeSession.brand);
+      
+      setTimeout(() => {
+         onLoginSuccess(fakeSession);
+         setLoading(false);
+      }, 600);
+      
+      return; 
+    }
+    // ============================================================
     try {
       const response = await fetch(`${API_URL}/login`, {
         method: 'POST',
