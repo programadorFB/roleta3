@@ -29,6 +29,7 @@
     "rechart": "^0.0.1",
     "recharts": "^3.3.0",
     "sentry": "^0.1.2",
+    "socket.io-client": "^4.8.1",
     "zap": "^2.1.1"
   },
   "devDependencies": {

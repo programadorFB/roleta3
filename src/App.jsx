@@ -1,9 +1,10 @@
-// App.jsx - VERSÃO FINAL OTIMIZADA E ALINHADA
+// App.jsx - VERSÃO FINAL COM SOCKET.IO + POLLING HÍBRIDO
 import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { 
     X, BarChart3, Clock, Hash, Percent, Layers, 
     LogOut, Lock, Mail, AlertCircle, PlayCircle, Filter, ExternalLink
 } from 'lucide-react';
+import { io } from 'socket.io-client'; // ⚡ IMPORTANTE: Cliente Socket
 import PaywallModal from './components/PaywallModal.jsx'; 
 import './components/PaywallModal.css';
 import MasterDashboard from './pages/MasterDashboard.jsx';
@@ -24,6 +25,8 @@ import {
 } from './errorHandler.js';
 
 const API_URL = import.meta.env.VITE_API_URL || ''; 
+// ⚡ URL DO SOCKET (Seu servidor Node.js)
+const SOCKET_URL = "https://roleta-fuza.sortehub.online";
 
 // === FUNÇÕES AUXILIARES ===
 const getNumberColor = (num) => {
@@ -35,6 +38,7 @@ const getNumberColor = (num) => {
 const ROULETTE_SOURCES = {
   immersive: '🌟 Immersive Roulette',
   brasileira: '🇧🇷 Roleta Brasileira',
+  'Brasileira PlayTech': '⚡ 🇧🇷 Brasileira PlayTech (AO VIVO)', // ⚡ NOVA FONTE SOCKET
   speed: '💨 Speed Roulette',
   xxxtreme: '⚡ XXXtreme Lightning',
   vipauto: '🚘 Auto Roulette Vip',
@@ -57,8 +61,9 @@ const ROULETTE_GAME_IDS = {
   lightning: 33,
   reddoor: 35,
   aovivo: 34,
-  brasileira_playtech: 102,
+  brasileira_playtech: 101,
   brasileira: 101,
+  'Brasileira PlayTech': 102, // ⚡ ID Mapeado (Mesmo da brasileira comum)
   relampago: 81,
   speedauto: 82,
   speed: 36,
@@ -625,7 +630,78 @@ const App = () => {
     }
   }, [isAuthenticated, jwtToken, gameUrl, isLaunching, handleLaunchGame]);
 
-  // Fetch History
+  // ==================================================================================
+  // ⚡ LÓGICA DO WEBSOCKET (SOCKET.IO) - APENAS PARA 'Brasileira PlayTech'
+  // ==================================================================================
+  useEffect(() => {
+    // Só ativa se o usuário selecionar a roleta específica
+    if (selectedRoulette !== 'Brasileira PlayTech') return;
+
+    console.log("🔌 Iniciando conexão Socket para PlayTech...");
+
+    const socket = io(SOCKET_URL, {
+      transports: ['websocket'],
+      reconnectionAttempts: 5
+    });
+
+    // 1. Carga Inicial Rápida via API REST (Pega histórico do banco ao conectar)
+    // Usa a URL do socket (servidor Node) que tem a rota /api/full-history
+    fetch(`${SOCKET_URL}/api/full-history?source=Brasileira PlayTech`)
+      .then(res => res.json())
+      .then(data => {
+        // Formata os dados para o padrão do App
+        const formatted = data.map(item => ({
+            number: parseInt(item.signal, 10),
+            color: getNumberColor(parseInt(item.signal, 10)),
+            signal: item.signal,
+            gameId: item.gameId,
+            signalId: item.signalId,
+            date: item.timestamp,
+            // Opcional: Adicionar Croupier se seu layout suportar
+            // croupier: item.croupier 
+        }));
+        
+        setSpinHistory(formatted);
+        if (formatted.length > 0) setSelectedResult(formatted[0]);
+      })
+      .catch(err => console.error("Erro fetch inicial socket:", err));
+
+    // 2. Escuta Novos Giros em Tempo Real
+    socket.on('novo-giro', (payload) => {
+      // Confirmação de segurança: só aceita se vier da fonte certa
+      if (payload.source === 'Brasileira PlayTech') {
+        console.log("⚡ GIRO SOCKET RECEBIDO:", payload.data.signal);
+        
+        const newSpin = {
+            number: parseInt(payload.data.signal, 10),
+            color: getNumberColor(parseInt(payload.data.signal, 10)),
+            signal: payload.data.signal,
+            gameId: payload.data.gameId,
+            signalId: payload.data.signalId,
+            date: payload.data.createdAt
+        };
+
+        setSpinHistory(prev => {
+            // Evita duplicatas se a rede oscilar e mandar o mesmo ID
+            if (prev.length > 0 && prev[0].signalId === newSpin.signalId) return prev;
+            
+            const newList = [newSpin, ...prev].slice(0, 1000); // Mantém histórico limpo
+            setSelectedResult(newSpin); // Atualiza o destaque na pista
+            return newList;
+        });
+      }
+    });
+
+    return () => {
+      console.log("🔌 Desconectando Socket...");
+      socket.disconnect();
+    };
+  }, [selectedRoulette]);
+
+
+  // ==================================================================================
+  // LÓGICA DE FETCH (POLLING) - PARA AS OUTRAS ROLETAS
+  // ==================================================================================
   const fetchHistory = useCallback(async () => {
     if (!userInfo?.email) return;
     
@@ -684,13 +760,17 @@ const App = () => {
     }
   }, [selectedRoulette, userInfo]);
 
-  // Fetch History Effect
+  // Fetch History Effect (com condicional para não rodar na roleta Socket)
   useEffect(() => {
     if (!isAuthenticated || !userInfo) return;
+
+    // ⚡ SE FOR A ROLETA SOCKET, INTERROMPE O POLLING AQUI
+    if (selectedRoulette === 'Brasileira PlayTech') return;
+
     fetchHistory();
     const intervalId = setInterval(fetchHistory, 1000);
     return () => clearInterval(intervalId);
-  }, [fetchHistory, isAuthenticated, userInfo]);
+  }, [fetchHistory, isAuthenticated, userInfo, selectedRoulette]);
 
   // Popup Handlers
   const handleNumberClick = useCallback((number) => {
