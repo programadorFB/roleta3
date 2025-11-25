@@ -4,7 +4,7 @@ import {
     X, BarChart3, Clock, Hash, Percent, Layers, 
     LogOut, Lock, Mail, AlertCircle, PlayCircle, Filter, ExternalLink
 } from 'lucide-react';
-import { io } from 'socket.io-client'; // ⚡ IMPORTANTE: Cliente Socket
+import { io } from 'socket.io-client'; // ⚡ IMPORTADO
 import PaywallModal from './components/PaywallModal.jsx'; 
 import './components/PaywallModal.css';
 import MasterDashboard from './pages/MasterDashboard.jsx';
@@ -25,8 +25,7 @@ import {
 } from './errorHandler.js';
 
 const API_URL = import.meta.env.VITE_API_URL || ''; 
-// ⚡ URL DO SOCKET (Seu servidor Node.js)
-const SOCKET_URL = "https://roleta-fuza.sortehub.online";
+const SOCKET_URL = "https://roleta-fuza.sortehub.online"; // ⚡ URL DO SEU BACKEND
 
 // === FUNÇÕES AUXILIARES ===
 const getNumberColor = (num) => {
@@ -38,7 +37,7 @@ const getNumberColor = (num) => {
 const ROULETTE_SOURCES = {
   immersive: '🌟 Immersive Roulette',
   brasileira: '🇧🇷 Roleta Brasileira',
-  'Brasileira PlayTech': '⚡ 🇧🇷 Brasileira PlayTech (AO VIVO)', // ⚡ NOVA FONTE SOCKET
+  'Brasileira PlayTech': '⚡ 🇧🇷 Brasileira PlayTech', // ⚡ NOVA FONTE SOCKET
   speed: '💨 Speed Roulette',
   xxxtreme: '⚡ XXXtreme Lightning',
   vipauto: '🚘 Auto Roulette Vip',
@@ -61,9 +60,9 @@ const ROULETTE_GAME_IDS = {
   lightning: 33,
   reddoor: 35,
   aovivo: 34,
-  brasileira_playtech: 101,
+  brasileira_playtech: 102,
   brasileira: 101,
-  'Brasileira PlayTech': 102, // ⚡ ID Mapeado (Mesmo da brasileira comum)
+  'Brasileira PlayTech': 101, // ⚡ ID Mapeado
   relampago: 81,
   speedauto: 82,
   speed: 36,
@@ -368,7 +367,7 @@ const App = () => {
   
   // App States
   const [selectedRoulette, setSelectedRoulette] = useState(Object.keys(ROULETTE_SOURCES)[0]);
-  const [spinHistory, setSpinHistory] = useState([]);
+  const [spinHistory, setSpinHistory] = useState([]); // ⚡ MANTIDO: O Array principal de dados
   const [selectedResult, setSelectedResult] = useState(null);
   const [popupNumber, setPopupNumber] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -639,36 +638,57 @@ const App = () => {
 
     console.log("🔌 Iniciando conexão Socket para PlayTech...");
 
-    const socket = io(SOCKET_URL, {
-      transports: ['websocket'],
-      reconnectionAttempts: 5
-    });
+ const socket = io(SOCKET_URL, {
+  transports: ['websocket'],
+  reconnectionAttempts: 5,
+  auth: {
+    token: jwtToken,
+    email: userInfo?.email
+  }
+});
 
     // 1. Carga Inicial Rápida via API REST (Pega histórico do banco ao conectar)
-    // Usa a URL do socket (servidor Node) que tem a rota /api/full-history
-    fetch(`${SOCKET_URL}/api/full-history?source=Brasileira PlayTech`)
-      .then(res => res.json())
-      .then(data => {
-        // Formata os dados para o padrão do App
-        const formatted = data.map(item => ({
-            number: parseInt(item.signal, 10),
-            color: getNumberColor(parseInt(item.signal, 10)),
-            signal: item.signal,
-            gameId: item.gameId,
-            signalId: item.signalId,
-            date: item.timestamp,
-            // Opcional: Adicionar Croupier se seu layout suportar
-            // croupier: item.croupier 
-        }));
-        
-        setSpinHistory(formatted);
-        if (formatted.length > 0) setSelectedResult(formatted[0]);
-      })
-      .catch(err => console.error("Erro fetch inicial socket:", err));
+fetch(`${SOCKET_URL}/api/full-history?source=Brasileira PlayTech&userEmail=${encodeURIComponent(userInfo?.email || '')}`)
+  .then(res => {
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json();
+  })
+  .then(data => {
+    // ⚡ VALIDAÇÃO: Garante que data é array
+    let historyArray = [];
+    
+    if (Array.isArray(data)) {
+      historyArray = data;
+    } else if (data && Array.isArray(data.data)) {
+      historyArray = data.data; // Se vier como { data: [...] }
+    } else if (data && Array.isArray(data.history)) {
+      historyArray = data.history; // Se vier como { history: [...] }
+    } else {
+      console.warn("⚠️ API retornou formato inesperado:", data);
+      return; // Aborta se não for array
+    }
+    
+    // Formata os dados para o padrão do App
+    const formatted = historyArray.map(item => ({
+      number: parseInt(item.signal, 10),
+      color: getNumberColor(parseInt(item.signal, 10)),
+      signal: item.signal,
+      gameId: item.gameId,
+      signalId: item.signalId,
+      date: item.timestamp,
+    }));
+    
+    console.log(`✅ Carregados ${formatted.length} spins históricos via Socket`);
+    setSpinHistory(formatted);
+    if (formatted.length > 0) setSelectedResult(formatted[0]);
+  })
+  .catch(err => {
+    console.error("❌ Erro ao carregar histórico socket:", err.message);
+    // Não bloqueia: Socket vai funcionar mesmo sem histórico inicial
+  });
 
     // 2. Escuta Novos Giros em Tempo Real
     socket.on('novo-giro', (payload) => {
-      // Confirmação de segurança: só aceita se vier da fonte certa
       if (payload.source === 'Brasileira PlayTech') {
         console.log("⚡ GIRO SOCKET RECEBIDO:", payload.data.signal);
         
@@ -682,10 +702,10 @@ const App = () => {
         };
 
         setSpinHistory(prev => {
-            // Evita duplicatas se a rede oscilar e mandar o mesmo ID
+            // Evita duplicatas se a rede oscilar e garante que o novo item vá para o topo
             if (prev.length > 0 && prev[0].signalId === newSpin.signalId) return prev;
             
-            const newList = [newSpin, ...prev].slice(0, 1000); // Mantém histórico limpo
+            const newList = [newSpin, ...prev].slice(0, 1000); 
             setSelectedResult(newSpin); // Atualiza o destaque na pista
             return newList;
         });
@@ -703,11 +723,20 @@ const App = () => {
   // LÓGICA DE FETCH (POLLING) - PARA AS OUTRAS ROLETAS
   // ==================================================================================
   const fetchHistory = useCallback(async () => {
+    // ⚡ AQUI NÃO TEM MAIS CACHE, VAI DIRETO PRO SERVIDOR
+    const currentRoulette = selectedRoulette;
     if (!userInfo?.email) return;
     
     try {
-      const response = await fetch(`${API_URL}/api/full-history?source=${selectedRoulette}&userEmail=${encodeURIComponent(userInfo.email)}`);
+      // ⚡ URL DE FETCH
+      const response = await fetch(`${API_URL}/api/full-history?source=${currentRoulette}&userEmail=${encodeURIComponent(userInfo.email)}`);
       
+      // ⚡ CHECK RACE CONDITION: Aborta se o usuário trocou de roleta enquanto esperava
+      if (currentRoulette !== selectedRoulette) {
+          console.warn(`[Abort] Roleta ${currentRoulette} abortada.`);
+          return; 
+      }
+
       if (!response.ok) {
         const errorInfo = await processErrorResponse(response, 'history');
         if (errorInfo.requiresPaywall || response.status === 403) {
@@ -719,6 +748,7 @@ const App = () => {
 
       const data = await response.json();
       
+      // Lógica de mesclagem e atualização do estado
       setSpinHistory(prev => {
         if (data.length === 0) return prev;
         
@@ -758,13 +788,13 @@ const App = () => {
     } catch (error) {
       console.error("Erro ao buscar histórico:", error.message);
     }
-  }, [selectedRoulette, userInfo]);
+  }, [selectedRoulette, userInfo, setSpinHistory, setSelectedResult]);
 
   // Fetch History Effect (com condicional para não rodar na roleta Socket)
   useEffect(() => {
     if (!isAuthenticated || !userInfo) return;
 
-    // ⚡ SE FOR A ROLETA SOCKET, INTERROMPE O POLLING AQUI
+    // SE FOR A ROLETA SOCKET, INTERROMPE O POLLING AQUI
     if (selectedRoulette === 'Brasileira PlayTech') return;
 
     fetchHistory();
@@ -965,7 +995,7 @@ const App = () => {
                     className="roulette-selector" 
                     value={selectedRoulette}
                     onChange={(e) => {
-                      setSpinHistory([]);
+                      setSpinHistory([]); // ⚡ Limpa o UI, força a re-execução do useEffect
                       setSelectedResult(null); 
                       setSelectedRoulette(e.target.value);
                       setLaunchError('');
