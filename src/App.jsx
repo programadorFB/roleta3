@@ -62,7 +62,7 @@ const ROULETTE_GAME_IDS = {
   aovivo: 34,
   brasileira_playtech: 102,
   brasileira: 101,
-  'Brasileira PlayTech': 101, // ⚡ ID Mapeado
+  'Brasileira PlayTech': 102, // ⚡ ID Mapeado
   relampago: 81,
   speedauto: 82,
   speed: 36,
