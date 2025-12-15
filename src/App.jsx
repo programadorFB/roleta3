@@ -963,7 +963,7 @@ fetch(`${SOCKET_URL}/api/full-history?source=Brasileira PlayTech&userEmail=${enc
         <div className="navbar-left"></div>
         <div className="navbar-right">
           <a 
-            href="https://betou.bet.br/"
+            href="https://sortenabet.bet.br/"
             target="_blank" 
             rel="noopener noreferrer"
             className="nav-btn"
