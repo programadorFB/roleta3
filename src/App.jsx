@@ -102,7 +102,7 @@ const formatPullTooltip = (number, pullStats, previousStats) => {
 
 // === COMPONENTE LOGIN ===
 const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => {
-  const [formData, setFormData] = useState({ email: '', password: '', brand: 'betou' });
+  const [formData, setFormData] = useState({ email: '', password: '', brand: 'sortenabet' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -159,8 +159,8 @@ const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => {
               <Lock size={32} color="black" />
             </div>
             <h2 className="login-title">Bem-vindo</h2>
-            <p className="login-subtitle">Este aplicativo é integrado com a casa BETOU.</p>
-            <p className="login-subtitle">Faça login com sua conta BETOU para acessar.</p>
+            <p className="login-subtitle">Este aplicativo é integrado com a casa SORTE NA BET.</p>
+            <p className="login-subtitle">Faça login com sua conta SORTE NA BET para acessar.</p>
           </div>
           
           {error && (
@@ -172,7 +172,7 @@ const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => {
           
           <form onSubmit={handleSubmit} className="login-form">
             <div className="form-group">
-              <label>E-mail Betou</label>
+              <label>E-mail SORTE NA BET</label>
               <div className="input-wrapper">
                 <Mail size={20} className="input-icon" />
                 <input 
@@ -187,7 +187,7 @@ const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => {
             </div>
 
             <div className="form-group">
-              <label>Senha Betou</label>
+              <label>Senha SORTE NA BET</label>
               <div className="input-wrapper">
                 <Lock size={20} className="input-icon" />
                 <input 
@@ -202,9 +202,9 @@ const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => {
             </div>
             
             <p className="register-link">
-              Ainda não tem cadastro na Betou?{" "}
+              Ainda não tem cadastro na SORTE NA BET?{" "}
               <a 
-                href="https://go.aff.betou.bet.br/bhlfl7qf?utm_medium=apprgr"
+                 href="https://go.aff.sortenabet.bet.br/2lqvuynt?utm_medium=app"
                 target="_blank"
                 rel="noopener noreferrer"
               >
