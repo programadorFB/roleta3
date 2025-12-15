@@ -202,7 +202,7 @@ const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => {
             </div>
             
             <p className="register-link">
-              Ainda não tem cadastro na SORTE NA BET?{" "}
+              Ainda não tem cadastro na plaforma?{" "}
               <a 
                  href="https://go.aff.sortenabet.bet.br/2lqvuynt?utm_medium=app"
                 target="_blank"
