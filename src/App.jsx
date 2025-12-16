@@ -196,7 +196,7 @@ const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => {
             <p className="register-link">
               Ainda não tem cadastro na plataforma?{" "}
               <a 
-                href="https://go.aff.betou.bet.br/bhlfl7qf?utm_medium=fr1"
+                href="https://go.aff.betou.bet.br/bhlfl7qf?utm_medium=fr2"
                 target="_blank"
                 rel="noopener noreferrer"
               >
