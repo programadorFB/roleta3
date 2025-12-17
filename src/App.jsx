@@ -1,10 +1,10 @@
-// App.jsx - VERSÃO FINAL COM SOCKET.IO + POLLING HÍBRIDO
+// App.jsx - VERSÃO FINAL CORRIGIDA (SEM TELA CINZA)
 import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { 
     X, BarChart3, Clock, Hash, Percent, Layers, 
     LogOut, Lock, Mail, AlertCircle, PlayCircle, Filter, ExternalLink
 } from 'lucide-react';
-import { io } from 'socket.io-client'; // ⚡ IMPORTADO
+import { io } from 'socket.io-client';
 import PaywallModal from './components/PaywallModal.jsx'; 
 import './components/PaywallModal.css';
 import MasterDashboard from './pages/MasterDashboard.jsx';
@@ -25,7 +25,7 @@ import {
 } from './errorHandler.js';
 
 const API_URL = import.meta.env.VITE_API_URL || ''; 
-const SOCKET_URL = "https://roleta-fuza.sortehub.online"; // ⚡ URL DO SEU BACKEND
+const SOCKET_URL = "https://roleta-fuza.sortehub.online"; 
 
 // === FUNÇÕES AUXILIARES ===
 const getNumberColor = (num) => {
@@ -36,18 +36,11 @@ const getNumberColor = (num) => {
 
 const ROULETTE_SOURCES = {
   immersive: '🌟 Immersive Roulette',
-  brasileira: '🇧🇷 Roleta Brasileira',
-  'Brasileira PlayTech': '⚡ 🇧🇷 Brasileira PlayTech', // ⚡ NOVA FONTE SOCKET
+  brasileira: '🇧🇷 Roleta Brasileira', 
+  brasileira_playtech: '🇧🇷 Brasileira PlayTech', 
   speed: '💨 Speed Roulette',
   xxxtreme: '⚡ XXXtreme Lightning',
   vipauto: '🚘 Auto Roulette Vip',
-  vip: '💎 Roleta Vip',
-  lightning: '⚡ Lightning Roulette',
-  aovivo: '🔴 Roleta ao Vivo',
-  speedauto: '💨 Speed Auto Roulette',
-  viproulette: '💎 Vip Roulette',
-  relampago: '⚡ Roleta Relâmpago',
-  malta: '🇲🇹 Casino Malta Roulette'
 };
 
 const ROULETTE_GAME_IDS = {
@@ -62,7 +55,6 @@ const ROULETTE_GAME_IDS = {
   aovivo: 34,
   brasileira_playtech: 102,
   brasileira: 101,
-  'Brasileira PlayTech': 102, // ⚡ ID Mapeado
   relampago: 81,
   speedauto: 82,
   speed: 36,
@@ -71,7 +63,6 @@ const ROULETTE_GAME_IDS = {
 };
 
 const filterOptions = [
-  // { value: 50, label: 'Últimas 50 Rodadas' },
   { value: 100, label: 'Últimas 100 Rodadas' },
   { value: 300, label: 'Últimas 300 Rodadas' },
   { value: 500, label: 'Últimas 500 Rodadas' },
@@ -202,7 +193,7 @@ const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => {
             </div>
             
             <p className="register-link">
-              Ainda não tem cadastro?{" "}
+              Ainda não tem cadastro na plataforma?{" "}
               <a 
                 href="https://go.aff.betou.bet.br/bhlfl7qf?utm_medium=apprgr"
                 target="_blank"
@@ -226,45 +217,44 @@ const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => {
             <p>Dashboard Analítico de Roleta</p>
           </div>
         </div>
-       {/* BANNER DE ALERTA ESTILIZADO */}
-<div className="alert-banner" style={{
-    backgroundColor: '#fff3cd',
-    borderLeft: '5px solid #ffc107',
-    padding: '20px',
-    marginTop: '15px',
-    marginBottom: '15px',
-    borderRadius: '4px',
-    fontFamily: 'sans-serif'
-}}>
-    <strong style={{ color: '#856404', display: 'block', marginBottom: '10px', fontSize: '1.1rem' }}>
-        ⚠️ Atenção - Para liberar seu acesso:
-    </strong>
-    <p style={{ color: '#856404', margin: '0 0 10px 0' }}>
-        Clica no link azul acima ‘’Clique aqui’’ e faça o cadastro na plataforma, verifique seu email/número e finalize a 
-        <strong> verificação facial</strong> (basta clicar em alguma Roleta como se fosse jogar).
-    </p>
-    <p style={{ color: '#856404', fontWeight: 'bold', margin: '0' }}>
-        Após concluir, volte e faça seu login aqui.
-    </p>
-</div>
 
-{/* SEU CONTAINER DE TERMOS */}
-<div className="terms-container" style={{
-    marginTop: '20px',
-    padding: '15px',
-    borderTop: '1px solid #e0e0e0',
-    textAlign: 'center'
-}}>
-    <p className="terms-text" style={{
-        fontSize: '0.85rem',
-        color: '#666',
-        fontWeight: '600',
-        letterSpacing: '0.5px'
-    }}>
-        🔹 Ao fazer login, você concorda com nossos 
-        <span style={{ color: '#007bff', textDecoration: 'underline', cursor: 'pointer' }}> Termos de Uso</span>
-    </p>
-</div>
+        <div className="alert-banner" style={{
+            backgroundColor: '#fff3cd',
+            borderLeft: '5px solid #ffc107',
+            padding: '20px',
+            marginTop: '15px',
+            marginBottom: '15px',
+            borderRadius: '4px',
+            fontFamily: 'sans-serif'
+        }}>
+            <strong style={{ color: '#856404', display: 'block', marginBottom: '10px', fontSize: '1.1rem' }}>
+                ⚠️ Atenção - Para liberar seu acesso:
+            </strong>
+            <p style={{ color: '#856404', margin: '0 0 10px 0' }}>
+                Clica no link azul acima ‘’Clique aqui’’ e faça o cadastro na plataforma, verifique seu email/número e finalize a 
+                <strong> verificação facial</strong> (basta clicar em alguma Roleta como se fosse jogar).
+            </p>
+            <p style={{ color: '#856404', fontWeight: 'bold', margin: '0' }}>
+                Após concluir, volte e faça seu login aqui.
+            </p>
+        </div>
+
+        <div className="terms-container" style={{
+            marginTop: '20px',
+            padding: '15px',
+            borderTop: '1px solid #e0e0e0',
+            textAlign: 'center'
+        }}>
+            <p className="terms-text" style={{
+                fontSize: '0.85rem',
+                color: '#666',
+                fontWeight: '600',
+                letterSpacing: '0.5px'
+            }}>
+                🔹 Ao fazer login, você concorda com nossos 
+                <span style={{ color: '#007bff', textDecoration: 'underline', cursor: 'pointer' }}> Termos de Uso</span>
+            </p>
+        </div>
       </div>
     </div>
   );
@@ -402,10 +392,11 @@ const App = () => {
   const [jwtToken, setJwtToken] = useState(null);
   const [isPaywallOpen, setIsPaywallOpen] = useState(false);
   const [checkoutUrl, setCheckoutUrl] = useState('');
+  const isPremium = false;
   
   // App States
   const [selectedRoulette, setSelectedRoulette] = useState(Object.keys(ROULETTE_SOURCES)[0]);
-  const [spinHistory, setSpinHistory] = useState([]); // ⚡ MANTIDO: O Array principal de dados
+  const [spinHistory, setSpinHistory] = useState([]);
   const [selectedResult, setSelectedResult] = useState(null);
   const [popupNumber, setPopupNumber] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -477,7 +468,7 @@ const App = () => {
     return () => clearLogoutCallback();
   }, [handleLogout]);
 
-  // Monitor inatividade do iframe - logout após 15 minutos com aba em foco
+  // Monitor inatividade
   useEffect(() => {
     if (!gameUrl || !isAuthenticated) {
       if (inactivityTimeoutRef.current) {
@@ -495,22 +486,20 @@ const App = () => {
       }
       
       inactivityTimeoutRef.current = setTimeout(() => {
-        console.log('Usuário inativo por 15 minutos (com aba em foco) - executando logout');
+        console.log('Usuário inativo por 15 minutos - executando logout');
         handleLogout();
         alert('Sessão encerrada por inatividade. Faça login novamente.');
       }, INACTIVITY_LIMIT);
     };
 
     const handleWindowBlur = () => {
-      if (inactivityTimeoutRef.current) {
-        clearTimeout(inactivityTimeoutRef.current);
-      }
+      if (inactivityTimeoutRef.current) clearTimeout(inactivityTimeoutRef.current);
     };
     
     const handleWindowFocus = () => resetInactivityTimer();
     const handlePageActivity = () => resetInactivityTimer();
 
-    resetInactivityTimer(); 
+    resetInactivityTimer();
 
     window.addEventListener('blur', handleWindowBlur);
     window.addEventListener('focus', handleWindowFocus);
@@ -520,9 +509,7 @@ const App = () => {
     document.addEventListener('touchstart', handlePageActivity, { passive: true });
 
     return () => {
-      if (inactivityTimeoutRef.current) {
-        clearTimeout(inactivityTimeoutRef.current);
-      }
+      if (inactivityTimeoutRef.current) clearTimeout(inactivityTimeoutRef.current);
       window.removeEventListener('blur', handleWindowBlur);
       window.removeEventListener('focus', handleWindowFocus);
       document.removeEventListener('mousemove', handlePageActivity);
@@ -532,7 +519,7 @@ const App = () => {
     };
   }, [gameUrl, isAuthenticated, handleLogout]);
 
-  // Calcular pull stats em idle callback
+  // Idle Calculations
   useEffect(() => {
     if (spinHistory.length === 0) return;
 
@@ -554,7 +541,7 @@ const App = () => {
     return () => clearTimeout(timeoutId);
   }, [spinHistory]);
 
-  // Detectar bug de rendering
+  // Iframe Health (CORRIGIDO: Removido manipulação direta do body)
   useEffect(() => {
     if (!gameUrl) {
       setIframeError(false);
@@ -563,24 +550,14 @@ const App = () => {
 
     const checkRenderingHealth = () => {
       const container = document.querySelector('.app-container');
-      if (!container) return;
-      
-      const rect = container.getBoundingClientRect();
-      const isVisible = rect.width > 0 && rect.height > 0;
-      
-      if (!isVisible) {
-        document.body.style.display = 'none';
-        void document.body.offsetHeight;
-        document.body.style.display = '';
-        
-        setTimeout(() => {
-          const stillBroken = !document.querySelector('.app-container')?.offsetHeight;
-          if (stillBroken) setIframeError(true);
-        }, 100);
+      // Verificação segura: apenas avisa se a altura for 0, não esconde o body
+      if (container && container.offsetHeight === 0) {
+          setIframeError(true);
       }
     };
 
-    const timeoutId = setTimeout(checkRenderingHealth, 1000);
+    // Aumentado o delay para garantir que renderizou
+    const timeoutId = setTimeout(checkRenderingHealth, 3000); 
     return () => clearTimeout(timeoutId);
   }, [gameUrl]);
 
@@ -659,7 +636,7 @@ const App = () => {
     }
   }, [selectedRoulette, jwtToken]);
 
-  // Auto-launch game on login
+  // Auto-launch
   useEffect(() => {
     if (isAuthenticated && jwtToken && !gameUrl && !isLaunching) { 
       console.log('Autenticado, iniciando jogo automaticamente...');
@@ -668,84 +645,48 @@ const App = () => {
   }, [isAuthenticated, jwtToken, gameUrl, isLaunching, handleLaunchGame]);
 
   // ==================================================================================
-  // ⚡ LÓGICA DO WEBSOCKET (SOCKET.IO) - APENAS PARA 'Brasileira PlayTech'
+  // ⚡ LÓGICA SOCKET.IO - APENAS PARA 'Brasileira PlayTech'
   // ==================================================================================
   useEffect(() => {
-    // Só ativa se o usuário selecionar a roleta específica
-    if (selectedRoulette !== 'Brasileira PlayTech') return;
+    if (selectedRoulette !== 'brasileira_playtech') return;
+    if (!jwtToken || !userInfo?.email) return;
 
-    console.log("🔌 Iniciando conexão Socket para PlayTech...");
+    console.log("🔌 Conectando Socket PlayTech...");
 
- const socket = io(SOCKET_URL, {
-  transports: ['websocket'],
-  reconnectionAttempts: 5,
-  auth: {
-    token: jwtToken,
-    email: userInfo?.email
-  }
-});
+    const socket = io(SOCKET_URL, {
+      transports: ['websocket'],
+      auth: {
+        token: jwtToken,
+        email: userInfo.email
+      },
+      forceNew: true // Garante nova conexão limpa
+    });
 
-    // 1. Carga Inicial Rápida via API REST (Pega histórico do banco ao conectar)
-fetch(`${SOCKET_URL}/api/full-history?source=Brasileira PlayTech&userEmail=${encodeURIComponent(userInfo?.email || '')}`)
-  .then(res => {
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return res.json();
-  })
-  .then(data => {
-    // ⚡ VALIDAÇÃO: Garante que data é array
-    let historyArray = [];
-    
-    if (Array.isArray(data)) {
-      historyArray = data;
-    } else if (data && Array.isArray(data.data)) {
-      historyArray = data.data; // Se vier como { data: [...] }
-    } else if (data && Array.isArray(data.history)) {
-      historyArray = data.history; // Se vier como { history: [...] }
-    } else {
-      console.warn("⚠️ API retornou formato inesperado:", data);
-      return; // Aborta se não for array
-    }
-    
-    // Formata os dados para o padrão do App
-    const formatted = historyArray.map(item => ({
-      number: parseInt(item.signal, 10),
-      color: getNumberColor(parseInt(item.signal, 10)),
-      signal: item.signal,
-      gameId: item.gameId,
-      signalId: item.signalId,
-      date: item.timestamp,
-    }));
-    
-    console.log(`✅ Carregados ${formatted.length} spins históricos via Socket`);
-    setSpinHistory(formatted);
-    if (formatted.length > 0) setSelectedResult(formatted[0]);
-  })
-  .catch(err => {
-    console.error("❌ Erro ao carregar histórico socket:", err.message);
-    // Não bloqueia: Socket vai funcionar mesmo sem histórico inicial
-  });
+    socket.on('connect', () => {
+      console.log("⚡ Socket Conectado!");
+    });
 
-    // 2. Escuta Novos Giros em Tempo Real
     socket.on('novo-giro', (payload) => {
       if (payload.source === 'Brasileira PlayTech') {
-        console.log("⚡ GIRO SOCKET RECEBIDO:", payload.data.signal);
-        
+        console.log("⚡ GIRO SOCKET:", payload.data.signal);
+
         const newSpin = {
-            number: parseInt(payload.data.signal, 10),
-            color: getNumberColor(parseInt(payload.data.signal, 10)),
-            signal: payload.data.signal,
-            gameId: payload.data.gameId,
-            signalId: payload.data.signalId,
-            date: payload.data.createdAt
+          number: parseInt(payload.data.signal, 10),
+          color: getNumberColor(parseInt(payload.data.signal, 10)),
+          signal: payload.data.signal,
+          gameId: payload.data.gameId,
+          signalId: payload.data.signalId,
+          date: payload.data.createdAt
         };
 
         setSpinHistory(prev => {
-            // Evita duplicatas se a rede oscilar e garante que o novo item vá para o topo
-            if (prev.length > 0 && prev[0].signalId === newSpin.signalId) return prev;
-            
-            const newList = [newSpin, ...prev].slice(0, 1000); 
-            setSelectedResult(newSpin); // Atualiza o destaque na pista
-            return newList;
+          if (prev.length > 0 && String(prev[0].signalId) === String(newSpin.signalId)) {
+            return prev;
+          }
+          
+          const newList = [newSpin, ...prev].slice(0, 1000); 
+          setSelectedResult(newSpin);
+          return newList;
         });
       }
     });
@@ -754,27 +695,22 @@ fetch(`${SOCKET_URL}/api/full-history?source=Brasileira PlayTech&userEmail=${enc
       console.log("🔌 Desconectando Socket...");
       socket.disconnect();
     };
-  }, [selectedRoulette]);
-
+  }, [selectedRoulette, jwtToken, userInfo]);
 
   // ==================================================================================
-  // LÓGICA DE FETCH (POLLING) - PARA AS OUTRAS ROLETAS
+  // LÓGICA DE FETCH (POLLING) - COM FILTRO PARA O SOCKET
   // ==================================================================================
   const fetchHistory = useCallback(async () => {
-    // ⚡ AQUI NÃO TEM MAIS CACHE, VAI DIRETO PRO SERVIDOR
-    const currentRoulette = selectedRoulette;
     if (!userInfo?.email) return;
     
-    try {
-      // ⚡ URL DE FETCH
-      const response = await fetch(`${API_URL}/api/full-history?source=${currentRoulette}&userEmail=${encodeURIComponent(userInfo.email)}`);
-      
-      // ⚡ CHECK RACE CONDITION: Aborta se o usuário trocou de roleta enquanto esperava
-      if (currentRoulette !== selectedRoulette) {
-          console.warn(`[Abort] Roleta ${currentRoulette} abortada.`);
-          return; 
-      }
+    let sourceQuery = selectedRoulette;
+    if (selectedRoulette === 'brasileira_playtech') {
+      sourceQuery = 'Brasileira PlayTech';
+    }
 
+    try {
+      const response = await fetch(`${API_URL}/api/full-history?source=${sourceQuery}&userEmail=${encodeURIComponent(userInfo.email)}`);
+      
       if (!response.ok) {
         const errorInfo = await processErrorResponse(response, 'history');
         if (errorInfo.requiresPaywall || response.status === 403) {
@@ -786,19 +722,20 @@ fetch(`${SOCKET_URL}/api/full-history?source=Brasileira PlayTech&userEmail=${enc
 
       const data = await response.json();
       
-      // Lógica de mesclagem e atualização do estado
       setSpinHistory(prev => {
         if (data.length === 0) return prev;
         
+        const convertItem = (item) => ({
+          number: parseInt(item.signal, 10),
+          color: getNumberColor(parseInt(item.signal, 10)),
+          signal: item.signal,
+          gameId: item.gameId,
+          signalId: item.signalId || item.signalid || item.id,
+          date: item.timestamp
+        });
+
         if (prev.length === 0) {
-          const converted = data.map(item => ({
-            number: parseInt(item.signal, 10),
-            color: getNumberColor(parseInt(item.signal, 10)),
-            signal: item.signal,
-            gameId: item.gameId,
-            signalId: item.signalId,
-            date: item.timestamp
-          }));
+          const converted = data.map(convertItem);
           setSelectedResult(converted[0] || null);
           return converted;
         }
@@ -807,15 +744,9 @@ fetch(`${SOCKET_URL}/api/full-history?source=Brasileira PlayTech&userEmail=${enc
         const newItems = [];
         
         for (const item of data) {
-          if (item.signalid === latestId) break;
-          newItems.push({
-            number: parseInt(item.signal, 10),
-            color: getNumberColor(parseInt(item.signal, 10)),
-            signal: item.signal,
-            gameId: item.gameId,
-            signalId: item.signalid,
-            date: item.timestamp
-          });
+          const currentId = item.signalId || item.signalid || item.id;
+          if (String(currentId) === String(latestId)) break;
+          newItems.push(convertItem(item));
         }
         
         if (newItems.length === 0) return prev;
@@ -826,17 +757,20 @@ fetch(`${SOCKET_URL}/api/full-history?source=Brasileira PlayTech&userEmail=${enc
     } catch (error) {
       console.error("Erro ao buscar histórico:", error.message);
     }
-  }, [selectedRoulette, userInfo, setSpinHistory, setSelectedResult]);
+  }, [selectedRoulette, userInfo]);
 
-  // Fetch History Effect (com condicional para não rodar na roleta Socket)
   useEffect(() => {
     if (!isAuthenticated || !userInfo) return;
 
-    // SE FOR A ROLETA SOCKET, INTERROMPE O POLLING AQUI
-    if (selectedRoulette === 'Brasileira PlayTech') return;
-
     fetchHistory();
-    const intervalId = setInterval(fetchHistory, 1000);
+
+    if (selectedRoulette === 'brasileira_playtech') {
+      console.log("🛑 Polling desativado para PlayTech (Usando Socket)");
+      return; 
+    }
+
+    console.log("🔄 Polling ativado (5s)");
+    const intervalId = setInterval(fetchHistory, 5000);
     return () => clearInterval(intervalId);
   }, [fetchHistory, isAuthenticated, userInfo, selectedRoulette]);
 
@@ -855,22 +789,14 @@ fetch(`${SOCKET_URL}/api/full-history?source=Brasileira PlayTech&userEmail=${enc
   const handleResultBoxClick = useCallback((e, result) => {
     if (window.innerWidth <= 1024) { 
       e.preventDefault();
-      
       const tooltipTitle = formatPullTooltip(result.number, numberPullStats, numberPreviousStats);
       const rect = e.currentTarget.getBoundingClientRect();
       const x = rect.left + (rect.width / 2);
       let y = rect.top - 10;
       let isBelow = false;
-      
-      if (y < 100) {
-        y = rect.bottom + 10;
-        isBelow = true;
-      }
-      
+      if (y < 100) { y = rect.bottom + 10; isBelow = true; }
       setMobileTooltip(prev => {
-        if (prev.visible && prev.content === tooltipTitle) {
-          return { visible: false, content: '', x: 0, y: 0, isBelow: false };
-        }
+        if (prev.visible && prev.content === tooltipTitle) return { visible: false, content: '', x: 0, y: 0, isBelow: false };
         return { visible: true, content: tooltipTitle, x, y, isBelow };
       });
     } else {
@@ -890,19 +816,8 @@ fetch(`${SOCKET_URL}/api/full-history?source=Brasileira PlayTech&userEmail=${enc
 
   const stats = useMemo(() => {
     const historyCount = filteredSpinHistory.length;
-    if (historyCount === 0) {
-      return { 
-        historyFilter: 0, 
-        colorFrequencies: { red: '0.0', black: '0.0', green: '0.0' }, 
-        latestNumbers: [] 
-      };
-    }
-    
-    const colorCounts = filteredSpinHistory.reduce((acc, curr) => {
-      acc[curr.color] = (acc[curr.color] || 0) + 1;
-      return acc;
-    }, {});
-    
+    if (historyCount === 0) return { historyFilter: 0, colorFrequencies: { red: '0.0', black: '0.0', green: '0.0' }, latestNumbers: [] };
+    const colorCounts = filteredSpinHistory.reduce((acc, curr) => { acc[curr.color] = (acc[curr.color] || 0) + 1; return acc; }, {});
     return {
       historyFilter: historyCount,
       colorFrequencies: {
@@ -916,301 +831,118 @@ fetch(`${SOCKET_URL}/api/full-history?source=Brasileira PlayTech&userEmail=${enc
 
   const popupStats = useMemo(() => {
     if (popupNumber === null || !isPopupOpen) return null;
-    
     const occurrences = [];
-    filteredSpinHistory.forEach((spin, index) => {
-      if (spin.number === popupNumber) occurrences.push({ index });
-    });
-    
+    filteredSpinHistory.forEach((spin, index) => { if (spin.number === popupNumber) occurrences.push({ index }); });
     const count = occurrences.length;
     const historyCount = filteredSpinHistory.length;
     const frequency = historyCount > 0 ? ((count / historyCount) * 100).toFixed(2) : '0.00';
-    
     const nextOccurrences = occurrences.slice(0, 5).map(occ => {
       const prevSpins = filteredSpinHistory.slice(occ.index + 1, occ.index + 6).map(s => s.number);
       return { spinsAgo: occ.index + 1, prevSpins };
     });
-    
-    return {
-      count, frequency, nextOccurrences, historyFilter: historyCount,
-      lastHitAgo: occurrences.length > 0 ? occurrences[0].index + 1 : null
-    };
+    return { count, frequency, nextOccurrences, historyFilter: historyCount, lastHitAgo: occurrences.length > 0 ? occurrences[0].index + 1 : null };
   }, [popupNumber, isPopupOpen, filteredSpinHistory]);
 
-  // Loading State
-  if (checkingAuth) {
-    return (
-      <div className="loading-screen">
-        <div className="loading-spinner-large"></div>
-        <p>Carregando...</p>
-      </div>
-    );
-  }
+  if (checkingAuth) return <div className="loading-screen"><div className="loading-spinner-large"></div><p>Carregando...</p></div>;
+  if (!isAuthenticated) return <Login onLoginSuccess={handleLoginSuccess} setIsPaywallOpen={setIsPaywallOpen} setCheckoutUrl={setCheckoutUrl} />;
 
-  // Not Authenticated
-  if (!isAuthenticated) {
-    return <Login 
-      onLoginSuccess={handleLoginSuccess} 
-      setIsPaywallOpen={setIsPaywallOpen}
-      setCheckoutUrl={setCheckoutUrl}
-    />;
-  }
-
-  // Main Render
   return (
     <div className="app-root">
-      {/* Mobile Tooltip */}
       {mobileTooltip.visible && (
         <>
           <div className="tooltip-backdrop" onClick={closeMobileTooltip} />
-          <div 
-            className="mobile-tooltip"
-            style={{
-              position: 'fixed',
-              top: mobileTooltip.y,
-              left: mobileTooltip.x,
-              transform: mobileTooltip.isBelow ? 'translate(-50%, 0)' : 'translate(-50%, -100%)',
-              zIndex: 2000,
-            }}
-          >
-            {mobileTooltip.content.split('\n').map((line, index) => (
-              <span key={index} className="tooltip-line">{line}</span>
-            ))}
+          <div className="mobile-tooltip" style={{ position: 'fixed', top: mobileTooltip.y, left: mobileTooltip.x, transform: mobileTooltip.isBelow ? 'translate(-50%, 0)' : 'translate(-50%, -100%)', zIndex: 2000 }}>
+            {mobileTooltip.content.split('\n').map((line, index) => <span key={index} className="tooltip-line">{line}</span>)}
           </div>
         </>
       )}
 
-      {/* Iframe Error Fallback */}
       {iframeError && (
         <div className="iframe-error-overlay">
           <div className="iframe-error-content">
             <p>⚠️ Erro de renderização detectado</p>
-            <button onClick={() => {
-              setGameUrl('');
-              setIframeError(false);
-              window.location.reload();
-            }}>
-              Recarregar Página
-            </button>
+            <button onClick={() => { setGameUrl(''); setIframeError(false); window.location.reload(); }}>Recarregar Página</button>
           </div>
         </div>
       )}
 
-      {/* Navbar */}
       <nav className="navbar">
         <div className="navbar-left"></div>
         <div className="navbar-right">
-          <a 
-            href="https://betou.bet.br/"
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="nav-btn"
-          >ENTRE NA PLATAFORMA<img src={W600} alt="Logo" style={{ height: "15px" }} />
-            <span className="nav-btn-text"></span>
-          </a>
-          <button onClick={handleLogout} className="logout-btn">
-            <LogOut size={18} />
-            <span className="logout-btn-text">Sair</span>
-          </button>
+          <a href="https://betou.bet.br/" target="_blank" rel="noopener noreferrer" className="nav-btn">ENTRE NA PLATAFORMA<img src={W600} alt="Logo" style={{ height: "15px" }} /><span className="nav-btn-text"></span></a>
+          <button onClick={handleLogout} className="logout-btn"><LogOut size={18} /><span className="logout-btn-text">Sair</span></button>
         </div>
       </nav>
 
-      {/* Main Content */}
       {activePage === 'roulette' && (
         <main className="app-container">
-          {/* Sidebar - Stats Dashboard */}
           <aside className="stats-dashboard">
             <h3 className="dashboard-title">Estatísticas e Ações</h3>
-            
-            {/* Selectors */}
             <div className="selectors-card">
               <div className="selectors-grid">
                 <div className="selector-group">
-                  <h4 className="selector-label">
-                    <Layers size={15} /> Roletas
-                  </h4>
-               <select 
-                    className="roulette-selector" 
-                    value={selectedRoulette}
-                    onChange={(e) => {
-                      setSpinHistory([]); // ⚡ Limpa o UI, força a re-execução do useEffect
-                      setSelectedResult(null); 
-                      setSelectedRoulette(e.target.value);
-                      setLaunchError('');
-                      setGameUrl(''); 
-                    }}
-                  >
-                    {Object.keys(ROULETTE_SOURCES).map(key => (
-                      <option key={key} value={key}>{ROULETTE_SOURCES[key]}</option>
-                    ))}
+                  <h4 className="selector-label"><Layers size={15} /> Roletas</h4>
+                  <select className="roulette-selector" value={selectedRoulette} onChange={(e) => { setSpinHistory([]); setSelectedResult(null); setSelectedRoulette(e.target.value); setLaunchError(''); setGameUrl(''); }}>
+                    {Object.keys(ROULETTE_SOURCES).map(key => <option key={key} value={key}>{ROULETTE_SOURCES[key]}</option>)}
                   </select>
                 </div>
-
                 <div className="selector-group">
-                  <h4 className="selector-label">
-                    <Filter size={15} /> Rodadas
-                  </h4>
-                  <select 
-                    className="roulette-selector" 
-                    value={historyFilter}
-                    onChange={(e) => setHistoryFilter(e.target.value === 'all' ? 'all' : Number(e.target.value))}
-                  >
-                    {filterOptions.map(opt => (
-                      <option key={opt.value} value={opt.value}>{opt.label}</option>
-                    ))}
+                  <h4 className="selector-label"><Filter size={15} /> Rodadas</h4>
+                  <select className="roulette-selector" value={historyFilter} onChange={(e) => setHistoryFilter(e.target.value === 'all' ? 'all' : Number(e.target.value))}>
+                    {filterOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
                   </select>
                 </div>
               </div>
-
-              <button
-                onClick={handleLaunchGame}
-                disabled={isLaunching || !ROULETTE_GAME_IDS[selectedRoulette]}
-                className="launch-button"
-              >
-                {isLaunching ? (
-                  <>
-                    <div className="spinner"></div>
-                    Iniciando...
-                  </>
-                ) : (
-                  <>
-                    <PlayCircle size={20} />
-                    {gameUrl ? `Reiniciar ${ROULETTE_SOURCES[selectedRoulette]}` : `Iniciar ${ROULETTE_SOURCES[selectedRoulette]}`}
-                  </>
-                )}
+              <button onClick={handleLaunchGame} disabled={isLaunching || !ROULETTE_GAME_IDS[selectedRoulette]} className="launch-button">
+                {isLaunching ? <><div className="spinner"></div>Iniciando...</> : <><PlayCircle size={20} />{gameUrl ? `Reiniciar ${ROULETTE_SOURCES[selectedRoulette]}` : `Iniciar ${ROULETTE_SOURCES[selectedRoulette]}`}</>}
               </button>
-              
-              {launchError && (
-                <p className="launch-error">{launchError}</p>
-              )}
+              {launchError && <p className="launch-error">{launchError}</p>}
             </div>
-            
-            {/* Stats Card */}
             <div className="stats-card">
-              <h4 className="stats-card-title">
-                <BarChart3 size={18} /> Total de Sinais
-              </h4>
+              <h4 className="stats-card-title"><BarChart3 size={18} /> Total de Sinais</h4>
               <p className="stats-card-value">{filteredSpinHistory.length}</p>
             </div>
-
-            {/* Master Dashboard */}
             <div className="master-dashboard-wrapper">
-              {stats.historyFilter >= 50 ? (
-                <MasterDashboard 
-                  spinHistory={filteredSpinHistory} 
-                  onSignalUpdate={setEntrySignals}
-                />
-              ) : (
-                <div className="waiting-card">
-                  Aguardando {50 - stats.historyFilter} spins para iniciar o Master Dashboard...
-                </div>
-              )}
+              {stats.historyFilter >= 50 ? <MasterDashboard spinHistory={filteredSpinHistory} onSignalUpdate={setEntrySignals} /> : <div className="waiting-card">Aguardando {50 - stats.historyFilter} spins para iniciar o Master Dashboard...</div>}
             </div>
           </aside>
 
-          {/* Mobile Racetrack */}
           <div className="racetrack-mobile-only">
-            <RacingTrack 
-              selectedResult={selectedResult}
-              onNumberClick={handleNumberClick}
-              entrySignals={entrySignals}
-            />
+            <RacingTrack selectedResult={selectedResult} onNumberClick={handleNumberClick} entrySignals={entrySignals} />
           </div>
 
-          {/* Main Content Area */}
           <section className="main-content">
             <div className="game-area">
-              {gameUrl && (
-                <GameIframe 
-                  url={gameUrl} 
-                  onError={() => setLaunchError('Erro ao carregar o iframe do jogo.')}
-                />
-              )}
-              
-              {/* Desktop Racetrack */}
+              {gameUrl && <GameIframe url={gameUrl} onError={() => setLaunchError('Erro ao carregar o iframe do jogo.')} />}
               <div className="racetrack-desktop-only">
-                <RacingTrack 
-                  selectedResult={selectedResult}
-                  onNumberClick={handleNumberClick}
-                  entrySignals={entrySignals}
-                />
+                <RacingTrack selectedResult={selectedResult} onNumberClick={handleNumberClick} entrySignals={entrySignals} />
               </div>
             </div>
           </section>
 
-          {/* Analysis Panel */}
           <aside className="analysis-panel">
             {stats.historyFilter >= 50 ? (
               <>
                 <div className="results-section">
-                  <h4 className="section-title">
-                    <Clock size={20} /> Últimos Resultados (100)
-                  </h4>
+                  <h4 className="section-title"><Clock size={20} /> Últimos Resultados (100)</h4>
                   <div className="color-frequencies">
-                    <span className="freq-item">
-                      Vermelho: <strong className="red">{stats.colorFrequencies.red}%</strong>
-                    </span>
-                    <span className="freq-item">
-                      Zero: <strong className="green">{stats.colorFrequencies.green}%</strong>
-                    </span>
-                    <span className="freq-item">
-                      Preto: <strong className="black">{stats.colorFrequencies.black}%</strong>
-                    </span>
+                    <span className="freq-item">Vermelho: <strong className="red">{stats.colorFrequencies.red}%</strong></span>
+                    <span className="freq-item">Zero: <strong className="green">{stats.colorFrequencies.green}%</strong></span>
+                    <span className="freq-item">Preto: <strong className="black">{stats.colorFrequencies.black}%</strong></span>
                   </div>
-                <div className='latest-results'>
-
-                  <ResultsGrid 
-                    latestNumbers={stats.latestNumbers}
-                    numberPullStats={numberPullStats}
-                    numberPreviousStats={numberPreviousStats}
-                    onResultClick={handleResultBoxClick}
-                    />
+                  <div className='latest-results'>
+                    <ResultsGrid latestNumbers={stats.latestNumbers} numberPullStats={numberPullStats} numberPreviousStats={numberPreviousStats} onResultClick={handleResultBoxClick} isPremium={isPremium} setIsPaywallOpen={setIsPaywallOpen} />
+                  </div>
                 </div>
-                    </div>
-
-                <div>
-                {/* Cerco integrado como opção dentro do DeepAnalysisPanel */}
-                <DeepAnalysisPanel 
-                  spinHistory={filteredSpinHistory} 
-                  setIsPaywallOpen={setIsPaywallOpen}
-                  cercoOptions={{
-                    enablePreFormation: true,
-                    enableFrequencyAnalysis: true,
-                    enableCandidateTracking: true,
-                    lookbackWindow: 50,
-                    maxVisibleAlerts: 3
-                  }}
-                />
-                </div>
+                <div><DeepAnalysisPanel spinHistory={filteredSpinHistory} setIsPaywallOpen={setIsPaywallOpen} /></div>
               </>
-            ) : (
-              <div className="waiting-panel">
-                <div className="waiting-card">
-                  Aguardando {50 - stats.historyFilter} spins para iniciar o Painel de Análise...
-                </div>
-              </div>
-            )}
+            ) : <div className="waiting-panel"><div className="waiting-card">Aguardando {50 - stats.historyFilter} spins para iniciar o Painel de Análise...</div></div>}
           </aside>
         </main>
       )}
 
-      {/* Modals */}
-      <PaywallModal
-        isOpen={isPaywallOpen}
-        onClose={() => {
-          setIsPaywallOpen(false);
-          handleLogout(); 
-        }}
-        userId={userInfo?.email} 
-        checkoutUrl={checkoutUrl}
-      />
-
-      <NumberStatsPopup 
-        isOpen={isPopupOpen}
-        onClose={closePopup}
-        number={popupNumber}
-        stats={popupStats}
-      />
+      <PaywallModal isOpen={isPaywallOpen} onClose={() => setIsPaywallOpen(false)} userId={userInfo?.email} checkoutUrl={checkoutUrl} />
+      <NumberStatsPopup isOpen={isPopupOpen} onClose={closePopup} number={popupNumber} stats={popupStats} />
     </div>
   );
 };
