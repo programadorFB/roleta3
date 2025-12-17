@@ -45,11 +45,14 @@ const RacingTrack = ({ selectedResult, onNumberClick, entrySignals = [] }) => {
   const layout1_rightCol = [3, 26, 0];
   const layout1_bottomRow = [8, 30, 11, 36, 13, 27, 6, 34, 17, 25, 2, 21, 4, 19, 15, 32]; // 16 números
 
-  // LAYOUT 2 (Layout Francês, da nova imagem image_d0ffcd.png)
+// LAYOUT 2 (Layout Francês, da nova imagem image_d0ffcd.png)
   const layout2_leftCol = [32, 0, 26];
-  const layout2_topRow = [15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30]; // 14 números
+  
+  // ADICIONADO O 8 NO FINAL
+  const layout2_topRow = [15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8]; 
+  
   const layout2_rightCol = [23, 10, 5];
-  const layout2_bottomRow = [3, 35, 12, 28, 7, 29, 18, 22, 9, 31, 14, 20, 1, 33, 16, 24]; // 16 números
+  const layout2_bottomRow = [3, 35, 12, 28, 7, 29, 18, 22, 9, 31, 14, 20, 1, 33, 16, 24];
 
   // === LÓGICA DE RENDERIZAÇÃO ===
   // Escolhe qual layout usar com base no estado 'isFlipped'
