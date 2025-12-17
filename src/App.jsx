@@ -1,10 +1,10 @@
-// App.jsx - VERSÃO FINAL HÍBRIDA (SOCKET + POLLING)
+// App.jsx - VERSÃO FINAL CORRIGIDA (SEM TELA CINZA)
 import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { 
     X, BarChart3, Clock, Hash, Percent, Layers, 
     LogOut, Lock, Mail, AlertCircle, PlayCircle, Filter, ExternalLink
 } from 'lucide-react';
-import { io } from 'socket.io-client'; // IMPORTAÇÃO DO SOCKET
+import { io } from 'socket.io-client';
 import PaywallModal from './components/PaywallModal.jsx'; 
 import './components/PaywallModal.css';
 import MasterDashboard from './pages/MasterDashboard.jsx';
@@ -25,7 +25,6 @@ import {
 } from './errorHandler.js';
 
 const API_URL = import.meta.env.VITE_API_URL || ''; 
-// URL DO SOCKET (Pode vir do .env ou hardcoded se preferir)
 const SOCKET_URL = "https://roleta-fuza.sortehub.online"; 
 
 // === FUNÇÕES AUXILIARES ===
@@ -37,8 +36,8 @@ const getNumberColor = (num) => {
 
 const ROULETTE_SOURCES = {
   immersive: '🌟 Immersive Roulette',
-  brasileira: '🇧🇷 Roleta Brasileira', // Antiga (Polling)
-  brasileira_playtech: '🇧🇷 Brasileira PlayTech', // Nova (Socket)
+  brasileira: '🇧🇷 Roleta Brasileira', 
+  brasileira_playtech: '🇧🇷 Brasileira PlayTech', 
   speed: '💨 Speed Roulette',
   xxxtreme: '⚡ XXXtreme Lightning',
   vipauto: '🚘 Auto Roulette Vip',
@@ -54,7 +53,7 @@ const ROULETTE_GAME_IDS = {
   lightning: 33,
   reddoor: 35,
   aovivo: 34,
-  brasileira_playtech: 102, // ID da Playtech
+  brasileira_playtech: 102,
   brasileira: 101,
   relampago: 81,
   speedauto: 82,
@@ -218,45 +217,44 @@ const Login = ({ onLoginSuccess, setIsPaywallOpen, setCheckoutUrl }) => {
             <p>Dashboard Analítico de Roleta</p>
           </div>
         </div>
-        {/* BANNER DE ALERTA ESTILIZADO */}
-<div className="alert-banner" style={{
-    backgroundColor: '#fff3cd',
-    borderLeft: '5px solid #ffc107',
-    padding: '20px',
-    marginTop: '15px',
-    marginBottom: '15px',
-    borderRadius: '4px',
-    fontFamily: 'sans-serif'
-}}>
-    <strong style={{ color: '#856404', display: 'block', marginBottom: '10px', fontSize: '1.1rem' }}>
-        ⚠️ Atenção - Para liberar seu acesso:
-    </strong>
-    <p style={{ color: '#856404', margin: '0 0 10px 0' }}>
-        Clica no link azul acima ‘’Clique aqui’’ e faça o cadastro na plataforma, verifique seu email/número e finalize a 
-        <strong> verificação facial</strong> (basta clicar em alguma Roleta como se fosse jogar).
-    </p>
-    <p style={{ color: '#856404', fontWeight: 'bold', margin: '0' }}>
-        Após concluir, volte e faça seu login aqui.
-    </p>
-</div>
 
-{/* SEU CONTAINER DE TERMOS */}
-<div className="terms-container" style={{
-    marginTop: '20px',
-    padding: '15px',
-    borderTop: '1px solid #e0e0e0',
-    textAlign: 'center'
-}}>
-    <p className="terms-text" style={{
-        fontSize: '0.85rem',
-        color: '#666',
-        fontWeight: '600',
-        letterSpacing: '0.5px'
-    }}>
-        🔹 Ao fazer login, você concorda com nossos 
-        <span style={{ color: '#007bff', textDecoration: 'underline', cursor: 'pointer' }}> Termos de Uso</span>
-    </p>
-</div>
+        <div className="alert-banner" style={{
+            backgroundColor: '#fff3cd',
+            borderLeft: '5px solid #ffc107',
+            padding: '20px',
+            marginTop: '15px',
+            marginBottom: '15px',
+            borderRadius: '4px',
+            fontFamily: 'sans-serif'
+        }}>
+            <strong style={{ color: '#856404', display: 'block', marginBottom: '10px', fontSize: '1.1rem' }}>
+                ⚠️ Atenção - Para liberar seu acesso:
+            </strong>
+            <p style={{ color: '#856404', margin: '0 0 10px 0' }}>
+                Clica no link azul acima ‘’Clique aqui’’ e faça o cadastro na plataforma, verifique seu email/número e finalize a 
+                <strong> verificação facial</strong> (basta clicar em alguma Roleta como se fosse jogar).
+            </p>
+            <p style={{ color: '#856404', fontWeight: 'bold', margin: '0' }}>
+                Após concluir, volte e faça seu login aqui.
+            </p>
+        </div>
+
+        <div className="terms-container" style={{
+            marginTop: '20px',
+            padding: '15px',
+            borderTop: '1px solid #e0e0e0',
+            textAlign: 'center'
+        }}>
+            <p className="terms-text" style={{
+                fontSize: '0.85rem',
+                color: '#666',
+                fontWeight: '600',
+                letterSpacing: '0.5px'
+            }}>
+                🔹 Ao fazer login, você concorda com nossos 
+                <span style={{ color: '#007bff', textDecoration: 'underline', cursor: 'pointer' }}> Termos de Uso</span>
+            </p>
+        </div>
       </div>
     </div>
   );
@@ -543,7 +541,7 @@ const App = () => {
     return () => clearTimeout(timeoutId);
   }, [spinHistory]);
 
-  // Iframe Health
+  // Iframe Health (CORRIGIDO: Removido manipulação direta do body)
   useEffect(() => {
     if (!gameUrl) {
       setIframeError(false);
@@ -552,24 +550,14 @@ const App = () => {
 
     const checkRenderingHealth = () => {
       const container = document.querySelector('.app-container');
-      if (!container) return;
-      
-      const rect = container.getBoundingClientRect();
-      const isVisible = rect.width > 0 && rect.height > 0;
-      
-      if (!isVisible) {
-        document.body.style.display = 'none';
-        void document.body.offsetHeight;
-        document.body.style.display = '';
-        
-        setTimeout(() => {
-          const stillBroken = !document.querySelector('.app-container')?.offsetHeight;
-          if (stillBroken) setIframeError(true);
-        }, 100);
+      // Verificação segura: apenas avisa se a altura for 0, não esconde o body
+      if (container && container.offsetHeight === 0) {
+          setIframeError(true);
       }
     };
 
-    const timeoutId = setTimeout(checkRenderingHealth, 1000);
+    // Aumentado o delay para garantir que renderizou
+    const timeoutId = setTimeout(checkRenderingHealth, 3000); 
     return () => clearTimeout(timeoutId);
   }, [gameUrl]);
 
@@ -660,10 +648,7 @@ const App = () => {
   // ⚡ LÓGICA SOCKET.IO - APENAS PARA 'Brasileira PlayTech'
   // ==================================================================================
   useEffect(() => {
-    // Só conecta se a roleta selecionada for a PlayTech
     if (selectedRoulette !== 'brasileira_playtech') return;
-    
-    // Se não tiver token, não conecta
     if (!jwtToken || !userInfo?.email) return;
 
     console.log("🔌 Conectando Socket PlayTech...");
@@ -673,16 +658,15 @@ const App = () => {
       auth: {
         token: jwtToken,
         email: userInfo.email
-      }
+      },
+      forceNew: true // Garante nova conexão limpa
     });
 
     socket.on('connect', () => {
       console.log("⚡ Socket Conectado!");
     });
 
-    // Escuta novos giros em tempo real
     socket.on('novo-giro', (payload) => {
-      // Verifica se o sinal é realmente da PlayTech (segurança extra)
       if (payload.source === 'Brasileira PlayTech') {
         console.log("⚡ GIRO SOCKET:", payload.data.signal);
 
@@ -696,13 +680,12 @@ const App = () => {
         };
 
         setSpinHistory(prev => {
-          // Evita duplicatas (verifica se o ID do topo é igual ao novo)
           if (prev.length > 0 && String(prev[0].signalId) === String(newSpin.signalId)) {
             return prev;
           }
           
           const newList = [newSpin, ...prev].slice(0, 1000); 
-          setSelectedResult(newSpin); // Atualiza destaque
+          setSelectedResult(newSpin);
           return newList;
         });
       }
@@ -720,8 +703,6 @@ const App = () => {
   const fetchHistory = useCallback(async () => {
     if (!userInfo?.email) return;
     
-    // Mapeia a source do front para a source da API
-    // Se for 'brasileira_playtech', a URL espera 'Brasileira PlayTech'
     let sourceQuery = selectedRoulette;
     if (selectedRoulette === 'brasileira_playtech') {
       sourceQuery = 'Brasileira PlayTech';
@@ -744,24 +725,21 @@ const App = () => {
       setSpinHistory(prev => {
         if (data.length === 0) return prev;
         
-        // Conversão de dados
         const convertItem = (item) => ({
           number: parseInt(item.signal, 10),
           color: getNumberColor(parseInt(item.signal, 10)),
           signal: item.signal,
           gameId: item.gameId,
-          signalId: item.signalId || item.signalid || item.id, // Fallback de ID
+          signalId: item.signalId || item.signalid || item.id,
           date: item.timestamp
         });
 
-        // Se histórico vazio, carrega tudo
         if (prev.length === 0) {
           const converted = data.map(convertItem);
           setSelectedResult(converted[0] || null);
           return converted;
         }
         
-        // Merge inteligente (apenas novos itens)
         const latestId = prev[0]?.signalId;
         const newItems = [];
         
@@ -781,26 +759,20 @@ const App = () => {
     }
   }, [selectedRoulette, userInfo]);
 
-  // Fetch Effect (Híbrido)
   useEffect(() => {
     if (!isAuthenticated || !userInfo) return;
 
-    // 1. Sempre faz a carga inicial (para preencher a tela rápido)
     fetchHistory();
 
-    // 2. Se for a PlayTech (Socket), NÃO define intervalo de polling
     if (selectedRoulette === 'brasileira_playtech') {
       console.log("🛑 Polling desativado para PlayTech (Usando Socket)");
       return; 
     }
 
-    // 3. Para outras roletas, mantém o Polling
     console.log("🔄 Polling ativado (5s)");
     const intervalId = setInterval(fetchHistory, 5000);
     return () => clearInterval(intervalId);
   }, [fetchHistory, isAuthenticated, userInfo, selectedRoulette]);
-
-  // ... (Resto do código: Popups, Tooltips, Memos, JSX - Mantidos iguais)
 
   // Popup Handlers
   const handleNumberClick = useCallback((number) => {
