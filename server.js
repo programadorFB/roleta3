@@ -6,7 +6,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import fetch from 'node-fetch';
 import cors from 'cors';
-import { createProxyMiddleware, fixRequestBody } from 'http-proxy-middleware';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 import { loadAllExistingSignalIds, appendToCsv, getFullHistory, SOURCES } from './src/utils/csvService.js';
 
 console.log(`\n\n--- INICIANDO SERVIDOR --- ${new Date().toLocaleTimeString()}`);
@@ -54,23 +54,14 @@ app.use(cors());
 app.use('/login', createProxyMiddleware({
     target: DEFAULT_AUTH_PROXY_TARGET,
     changeOrigin: true,
-    pathRewrite: { '^/login': '/login' },
-    onProxyReq: (proxyReq, req, res) => {
-        // 1. Simula um navegador real para evitar detecção de Bot
-        proxyReq.setHeader('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36');
-        proxyReq.setHeader('Accept', 'application/json, text/plain, */*');
-        proxyReq.setHeader('Origin', 'https://free.smartanalise.com.br');
-        proxyReq.setHeader('Referer', 'https://free.smartanalise.com.br/');
-
-        // 2. Resolve o problema de Body "perdido" pelo bodyParser do Express
-        fixRequestBody(proxyReq, req);
+    timeout: 60000,
+    followRedirects: true,
+    pathRewrite: { '^/': '/login' },
+    onProxyReq: (proxyReq) => {
+        proxyReq.setHeader('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36');
+        proxyReq.setHeader('Accept', 'application/json');
     },
-    onError: (err, req, res) => {
-        console.error('❌ Erro no Proxy de Login:', err.message);
-        if (!res.headersSent) {
-            res.status(500).json({ error: 'Erro na ponte de autenticação' });
-        }
-    }
+    onError: (err, req, res) => { if (!res.headersSent) res.status(500).json({ error: true }); }
 }));
 app.use('/start-game', createProxyMiddleware({
     target: DEFAULT_AUTH_PROXY_TARGET,
@@ -169,7 +160,7 @@ app.get('/api/full-history', async (req, res) => {
 
 app.get('/health', (req, res) => res.status(200).json({ status: 'OK', socket: 'active' }));
 
-app.get(/.*/, (req, res) => {
+app.get(/,*/, (req, res) => {
     if (req.url.startsWith('/api/')) return res.status(44).json({ error: 'Not Found' });
     res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
