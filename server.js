@@ -160,7 +160,7 @@ app.get('/api/full-history', async (req, res) => {
 
 app.get('/health', (req, res) => res.status(200).json({ status: 'OK', socket: 'active' }));
 
-app.get(/,*/, (req, res) => {
+app.get(/.*/, (req, res) => {
     if (req.url.startsWith('/api/')) return res.status(44).json({ error: 'Not Found' });
     res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
