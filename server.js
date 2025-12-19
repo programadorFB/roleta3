@@ -53,15 +53,15 @@ app.use((req, res, next) => {
 app.use(cors());
 app.use('/login', createProxyMiddleware({
     target: DEFAULT_AUTH_PROXY_TARGET,
-    changeOrigin: true,
-    timeout: 60000,
-    followRedirects: true,
-    pathRewrite: { '^/': '/login' },
-    onProxyReq: (proxyReq) => {
-        proxyReq.setHeader('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36');
-        proxyReq.setHeader('Accept', 'application/json');
-    },
-    onError: (err, req, res) => { if (!res.headersSent) res.status(500).json({ error: true }); }
+    changeOrigin: true, // Essencial para o Render mudar o host da requisição
+    pathRewrite: { '^/login': '/login' },
+    onProxyReq: (proxyReq, req) => {
+        // Força headers que navegadores reais usam
+        proxyReq.setHeader('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36');
+        proxyReq.setHeader('Accept', 'application/json, text/plain, */*');
+        proxyReq.setHeader('Origin', 'https://free.smartanalise.com.br');
+        proxyReq.setHeader('Referer', 'https://free.smartanalise.com.br/');
+    }
 }));
 app.use('/start-game', createProxyMiddleware({
     target: DEFAULT_AUTH_PROXY_TARGET,
