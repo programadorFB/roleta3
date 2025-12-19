@@ -6,7 +6,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import fetch from 'node-fetch';
 import cors from 'cors';
-import { createProxyMiddleware } from 'http-proxy-middleware';
+import { createProxyMiddleware, fixRequestBody } from 'http-proxy-middleware';
 import { loadAllExistingSignalIds, appendToCsv, getFullHistory, SOURCES } from './src/utils/csvService.js';
 
 console.log(`\n\n--- INICIANDO SERVIDOR --- ${new Date().toLocaleTimeString()}`);
@@ -53,14 +53,23 @@ app.use((req, res, next) => {
 app.use(cors());
 app.use('/login', createProxyMiddleware({
     target: DEFAULT_AUTH_PROXY_TARGET,
-    changeOrigin: true, // Essencial para o Render mudar o host da requisição
+    changeOrigin: true,
     pathRewrite: { '^/login': '/login' },
-    onProxyReq: (proxyReq, req) => {
-        // Força headers que navegadores reais usam
+    onProxyReq: (proxyReq, req, res) => {
+        // 1. Simula um navegador real para evitar detecção de Bot
         proxyReq.setHeader('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36');
         proxyReq.setHeader('Accept', 'application/json, text/plain, */*');
         proxyReq.setHeader('Origin', 'https://free.smartanalise.com.br');
         proxyReq.setHeader('Referer', 'https://free.smartanalise.com.br/');
+
+        // 2. Resolve o problema de Body "perdido" pelo bodyParser do Express
+        fixRequestBody(proxyReq, req);
+    },
+    onError: (err, req, res) => {
+        console.error('❌ Erro no Proxy de Login:', err.message);
+        if (!res.headersSent) {
+            res.status(500).json({ error: 'Erro na ponte de autenticação' });
+        }
     }
 }));
 app.use('/start-game', createProxyMiddleware({
