@@ -1,7 +1,7 @@
 // hooks/index.js
 
-export { useAuth } from './useAuth';
-export { useInactivityTimeout } from './useInactivityTimeout';
-export { useRouletteSocket } from './useRouletteSocket';
-export { useSpinHistory } from './useSpinHistory';
-export { useGameLauncher } from './useGameLauncher';
+export { useAuth } from './useAuth.js';
+export { useInactivityTimeout } from './useInactivityTimeout.js';
+export { useRouletteSocket } from './useRouletteSocket.js';
+export { useSpinHistory } from './useSpinHistory.js';
+export { useGameLauncher } from './useGameLauncher.js';
