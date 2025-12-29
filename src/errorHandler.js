@@ -2,10 +2,62 @@
  * Sistema de Tratamento de Erros HTTP
  * Traduz códigos de erro técnicos para mensagens que o usuário entende
  * 🆕 NOVO: Logout automático em erros 401
+ * 🆕 NOVO: Sistema de Logs e Rastreamento de Usuário
  */
 
 // 🆕 Callback global para logout automático
 let logoutCallback = null;
+
+// 🆕 Variável para armazenar o usuário atual para logs
+let currentUserInfo = { email: 'anônimo', id: null };
+
+/**
+ * Registra informações do usuário para os logs de erro
+ * Chame isso logo após o login ou quando o usuário digitar o email
+ * @param {Object|string} user - Objeto user ou string de email
+ */
+export function registerUserForLogs(user) {
+  if (typeof user === 'string') {
+    currentUserInfo = { ...currentUserInfo, email: user };
+  } else {
+    currentUserInfo = { ...currentUserInfo, ...user };
+  }
+  // console.log('👤 [errorHandler] Rastreamento de usuário atualizado:', currentUserInfo.email);
+}
+
+/**
+ * Envia o erro para o backend ou serviço de monitoramento
+ * @param {Object} errorPayload - O objeto de erro completo
+ */
+async function sendErrorLog(errorPayload) {
+  const logData = {
+    timestamp: new Date().toISOString(),
+    user: currentUserInfo,
+    error: errorPayload,
+    url: window.location.href,
+    userAgent: navigator.userAgent
+  };
+
+  // 1. Exibe no console do navegador (para debug local)
+  console.groupCollapsed(`🚨 ERRO RASTREADO: ${errorPayload.title}`);
+  console.log('Usuário:', currentUserInfo.email);
+  console.log('Detalhes:', errorPayload);
+  console.groupEnd();
+
+  // 2. Tenta enviar para o seu backend (opcional - descomente se tiver endpoint de logs)
+  /*
+  try {
+    fetch('https://api.appbackend.tech/logs', { // Use sua URL de API aqui
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(logData),
+      keepalive: true // Garante o envio mesmo se a página fechar
+    }).catch(() => {}); // Ignora falhas no envio do log para não gerar loop
+  } catch (e) {
+    // Falha silenciosa no logger
+  }
+  */
+}
 
 /**
  * Registra a função de logout a ser chamada em erros 401
@@ -20,9 +72,6 @@ export function registerLogoutCallback(callback) {
   console.log('✅ [errorHandler] Callback de logout registrado');
 }
 
-/**
- * Remove o callback de logout (útil para testes)
- */
 export function clearLogoutCallback() {
   logoutCallback = null;
 }
@@ -130,60 +179,63 @@ const CONTEXT_ERRORS = {
   }
 };
 
-/**
- * 🆕 Executa o logout automático para erros 401
- * @param {number} statusCode - Código de status HTTP
- */
 function handleAutoLogout(statusCode) {
   if (statusCode === 401 && logoutCallback) {
     console.warn('🔒 [errorHandler] Erro 401 detectado - Executando logout automático');
-    
-    // Executa logout em um timeout para não bloquear a resposta
     setTimeout(() => {
       logoutCallback();
-    }, 1500); // 1.5s de delay para o usuário ver a mensagem
+    }, 1500); 
   }
 }
 
 /**
- * Traduz um erro HTTP em uma mensagem amigável
- * @param {number} statusCode - Código de status HTTP
- * @param {string} context - Contexto do erro (login, game, history, network)
- * @param {Object} errorData - Dados adicionais do erro (opcional)
- * @returns {Object} - { title, message, icon, details }
+ * Traduz um erro HTTP em uma mensagem amigável e LOGA O ERRO
  */
 export function translateError(statusCode, context = 'generic', errorData = {}) {
-  // 🆕 Executa logout automático se for 401
   handleAutoLogout(statusCode);
 
-  // Primeiro, tenta encontrar um erro específico do contexto
+  let finalError = {
+    title: `Erro ${statusCode}`,
+    message: 'Ocorreu um erro inesperado.',
+    icon: '❌',
+    details: errorData.message || null,
+    rawCode: statusCode,
+    rawContext: context
+  };
+
+  // Tenta encontrar erro específico
   if (errorData.code && CONTEXT_ERRORS[context]?.[errorData.code]) {
-    return {
+    finalError = {
+      ...finalError,
       title: ERROR_MESSAGES[statusCode]?.title || 'Erro',
       message: CONTEXT_ERRORS[context][errorData.code],
       icon: ERROR_MESSAGES[statusCode]?.icon || '❌',
-      details: errorData.message || null
+    };
+  } 
+  // Usa genérico se não achou específico
+  else if (ERROR_MESSAGES[statusCode]) {
+    finalError = {
+      ...finalError,
+      ...ERROR_MESSAGES[statusCode],
+      details: errorData.message || ERROR_MESSAGES[statusCode].message
     };
   }
 
-  // Se não encontrar, usa a mensagem genérica do status code
-  const errorInfo = ERROR_MESSAGES[statusCode] || {
-    title: `Erro ${statusCode}`,
-    message: 'Ocorreu um erro inesperado. Entre em contato com o suporte.',
-    icon: '❌'
-  };
+  // 🆕 REGISTRA O LOG DO ERRO AQUI
+  // Só logamos erros reais (400+), ignorando alguns 404 comuns se desejar
+  if (statusCode >= 400) {
+    sendErrorLog({
+      type: 'HTTP_ERROR',
+      statusCode,
+      context,
+      message: finalError.message,
+      serverDetails: errorData // Detalhes técnicos vindos do servidor
+    });
+  }
 
-  return {
-    ...errorInfo,
-    details: errorData.message || null
-  };
+  return finalError;
 }
 
-/**
- * Trata erros de rede (quando nem a resposta HTTP chega)
- * @param {Error} error - Objeto de erro
- * @returns {Object} - { title, message, icon, details }
- */
 export function translateNetworkError(error) {
   let errorKey = 'NETWORK_ERROR';
 
@@ -195,20 +247,24 @@ export function translateNetworkError(error) {
     errorKey = 'TIMEOUT';
   }
 
-  return {
+  const finalError = {
     title: 'Erro de Conexão',
     message: CONTEXT_ERRORS.network[errorKey],
     icon: '📡',
-    details: error.message
+    details: error.message,
+    rawCode: 0
   };
+
+  // 🆕 REGISTRA O LOG DE REDE
+  sendErrorLog({
+    type: 'NETWORK_ERROR',
+    errorCode: errorKey,
+    details: error.message
+  });
+
+  return finalError;
 }
 
-/**
- * Função auxiliar para processar resposta de erro da API
- * @param {Response} response - Resposta HTTP
- * @param {string} context - Contexto do erro
- * @returns {Promise<Object>} - { title, message, icon, details, requiresPaywall, checkoutUrl }
- */
 export async function processErrorResponse(response, context = 'generic') {
   let errorData = {};
   
@@ -222,12 +278,11 @@ export async function processErrorResponse(response, context = 'generic') {
     }
   } catch (e) {
     console.warn('Não foi possível parsear erro da API:', e);
-    errorData = { message: 'Erro desconhecido' };
+    errorData = { message: 'Erro desconhecido', raw: e.message };
   }
 
   const translatedError = translateError(response.status, context, errorData);
 
-  // Adiciona informações especiais (ex: paywall)
   return {
     ...translatedError,
     requiresPaywall: errorData.requiresSubscription || errorData.code === 'FORBIDDEN_SUBSCRIPTION',
@@ -237,16 +292,9 @@ export async function processErrorResponse(response, context = 'generic') {
   };
 }
 
-/**
- * Hook/função para exibir erros de forma consistente
- * @param {Object} error - Erro traduzido
- * @param {Function} setErrorState - Função setState para exibir erro
- * @param {Object} options - Opções adicionais { showIcon, timeout }
- */
 export function displayError(error, setErrorState, options = {}) {
   const { showIcon = true, timeout = null } = options;
   
-  // Valida se setErrorState é uma função
   if (typeof setErrorState !== 'function') {
     console.error('[errorHandler] displayError: setErrorState deve ser uma função');
     return;
@@ -258,24 +306,11 @@ export function displayError(error, setErrorState, options = {}) {
 
   setErrorState(errorMessage);
 
-  // Auto-limpar erro após timeout (se especificado)
   if (timeout) {
     setTimeout(() => setErrorState(''), timeout);
   }
-
-  // Log técnico para debug (somente em dev)
-  if (process.env.NODE_ENV === 'development' && error.details) {
-    console.error('[Error Details]:', error.details);
-  }
 }
 
-/**
- * Wrapper completo para fetch com tratamento de erro
- * @param {string} url - URL da requisição
- * @param {Object} options - Opções do fetch
- * @param {string} context - Contexto do erro
- * @returns {Promise<Object>} - { success, data, error }
- */
 export async function safeFetch(url, options = {}, context = 'generic') {
   try {
     const response = await fetch(url, options);
@@ -285,7 +320,6 @@ export async function safeFetch(url, options = {}, context = 'generic') {
       return { success: false, data: null, error };
     }
 
-    // Tenta parsear JSON, mas aceita outros tipos
     let data;
     const contentType = response.headers.get('content-type');
     
@@ -306,6 +340,7 @@ export async function safeFetch(url, options = {}, context = 'generic') {
 export default {
   registerLogoutCallback,
   clearLogoutCallback,
+  registerUserForLogs, // 🆕 EXPORTADO
   translateError,
   translateNetworkError,
   processErrorResponse,
