@@ -19,7 +19,7 @@ const httpServer = createServer(app);
 // --- SOCKET.IO ---
 const io = new Server(httpServer, {
     cors: { origin: "*", methods: ["GET", "POST"] }
-});a
+});
 
 const lastEmittedSignalIds = {}; 
 
@@ -33,7 +33,7 @@ const API_URLS = {
     // A NOVA PLAYTECH (SorteHub)
     brasileiraplay: 'https://pbrapi.sortehub.online/api/sinais/historico', 
     
-    default: 'https://apptemporario-production.up.railway.app/api/0194b473-4604-7458-bb18-e3fc562980c2',
+    // default: 'https://apptemporario-production.up.railway.app/api/0194b473-4604-7458-bb18-e3fc562980c2',
     speed: 'https://apptemporario-production.up.railway.app/api/0194b473-c347-752f-9eaf-783721339479',
     xxxtreme: 'https://apptemporario-production.up.railway.app/api/0194b478-5ba0-7110-8179-d287b2301e2e',
     vipauto: 'https://apptemporario-production.up.railway.app/api/0194b473-9044-772b-a6fc-38236eb08b42'
@@ -138,7 +138,7 @@ async function fetchAllData() {
         // Busca a Nova PlayTech (Com Socket)
         fetchAndSaveFromSource(API_URLS.brasileiraplay, 'Brasileira PlayTech'), 
         
-        fetchAndSaveFromSource(API_URLS.default, 'default'),
+        // fetchAndSaveFromSource(API_URLS.default, 'default'),
         fetchAndSaveFromSource(API_URLS.speed, 'speed'),
         fetchAndSaveFromSource(API_URLS.xxxtreme, 'xxxtreme'),
         fetchAndSaveFromSource(API_URLS.vipauto, 'vipauto')
